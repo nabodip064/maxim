@@ -25,7 +25,7 @@ trans('others.add_product_label'))
                         <form class="form-horizontal" action="{{ Route('add_product_action') }}" method="POST" autocomplete="off">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
-                            <div class="row">s
+                            <div class="row">
                             	<div class="col-sm-12 col-md-6">
 
 
