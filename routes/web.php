@@ -886,5 +886,12 @@ Route::group(['middleware' => 'auth'], function () {
                 'as'=>'mrf_list_view',
                 'uses'=>'taskController\MrfListController@mrfListView'
             ]);
+
+            Route::get('permission/task/assign',
+            [
+                'as'=>'permission_task_assign',
+                'uses'=>'taskAssignController@taskassign'
+            ]);
+
 	    });
 	});
