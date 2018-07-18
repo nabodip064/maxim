@@ -441,6 +441,12 @@ Route::group(['middleware' => 'auth'], function () {
                 'uses'=>'ProductController@addProduct'
             ]);
 
+        Route::post('add/vendor/price',
+            [
+                'as'=>'add_product_price_action',
+                'uses'=>'ProductController@addVendorPrice'
+            ]);
+
 
         Route::get('/deleteProduct/{product_id?}',
             [

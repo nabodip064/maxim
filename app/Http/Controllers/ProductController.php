@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\dataget\ListGetController;
 use App\Http\Controllers\Message\StatusMessage;
 use App\Http\Controllers\RoleManagement;
+use App\MaxParty;
 use App\MxpProduct;
 use App\MxpBrand;
 use App\MxpProductsColors;
+use App\VendorPrice;
 use Auth;
 use Illuminate\Http\Request;
 use Validator;
@@ -64,7 +66,11 @@ class ProductController extends Controller
         $brands = MxpBrand::where([['user_id',Auth::user()->user_id],['status', self::ACTIVE_BRAND]])->get();
     	$colors = MxpGmtsColor::where('user_id',Auth::user()->user_id)->where('item_code', NULL)->where('status', '=', 1)->get();
         $sizes = MxpProductSize::where('user_id',Auth::user()->user_id)->where('product_code', '')->where('status', '=', 1)->get();
-       return view('product_management.add_product',compact('brands', 'colors', 'sizes'));
+
+        $vendorCompanyList = MaxParty::select('id', 'name', 'name_buyer')->get();
+
+
+       return view('product_management.add_product',compact('brands', 'colors', 'sizes', 'vendorCompanyList'));
     }
 
     Public function updateProductView(Request $request){
@@ -291,6 +297,21 @@ class ProductController extends Controller
         $createSize->action = 'create';
         $createSize->save();
         return 0;
+    }
+
+    public function addVendorPrice(Request $req){
+
+        for($i=0; $i<count($req->party_table_id); $i++){
+
+            $storePrice = new VendorPrice();
+            $storePrice->party_table_id = $req->party_table_id[$i];
+            $storePrice->vendor_com_price = $req->v_com_price[$i];
+            $storePrice->save();
+
+        }
+
+
+        return 'Vendor Price Save Successfully';
     }
 
 }

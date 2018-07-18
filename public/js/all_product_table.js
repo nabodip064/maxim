@@ -303,3 +303,30 @@ $('.add-size-brand').on('click', function(){
     $('#addSizeModal').modal('toggle');
 });
 
+
+
+$('.vendor-price-btn').on('click', function(e){
+
+	e.preventDefault();
+    var inputValue = $('form.vendor-price').serialize();
+
+
+    $.ajax({
+        type: "POST",
+        url: "/add/vendor/price",
+        data: inputValue,
+        datatype: 'json',
+        cache: false,
+        async: false,
+        success: function(result) {
+            console.log(result);
+
+        },
+        error: function(data) {
+            result('vendor Price Error: '+ data);
+        },
+
+    });
+
+
+});

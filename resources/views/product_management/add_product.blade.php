@@ -150,7 +150,16 @@ trans('others.add_product_label'))
 		                            <div class="form-group">
 		                                <label class="col-md-4 control-label">{{ trans('others.product_unit_price_label') }}</label>
 		                                <div class="col-md-6">
-		                                    <input type="text" class="form-control" name="p_unit_price" value="{{old('p_unit_price')}}" placeholder="Unit Price">
+											<div style="width:80%; float: left;">
+		                                    	<input type="text" class="form-control" name="p_unit_price" value="{{old('p_unit_price')}}" placeholder="Unit Price">
+											</div>
+											<div class="add-vendor-com-price-btn" style="width:20%; float: left; padding-top: 5px;">
+												<a data-toggle="modal" data-target="#addVendorComPrice">
+													<i class="material-icons">
+														add_circle_outline
+													</i>
+												</a>
+											</div>
 		                                </div>
 		                            </div>
 
@@ -193,6 +202,7 @@ trans('others.add_product_label'))
                                 </div>
                             </div>
                         </form>
+
                     </div>
                 </div>
             </div>
