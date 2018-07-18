@@ -67,11 +67,12 @@ trans('others.add_product_label'))
 													</select>
 												</div>
 											   <div class="add-brand-btn" style="width:20%; float: left; padding-top: 5px;">
-												   <a  data-toggle="modal" data-target="#addBrandModal">
+												   <a class="hand-cursor"  data-toggle="modal" data-target="#addBrandModal">
 													   <i class="material-icons">
 														   add_circle_outline
 													   </i>
 												   </a>
+
 											   </div>
 		                                </div>
 		                            </div>
@@ -94,7 +95,7 @@ trans('others.add_product_label'))
 
 											</div>
 											<div class="add-color-btn" style="width:20%; float: left; padding-top: 5px;">
-												<a  data-toggle="modal" data-target="#addColorModal">
+												<a class="hand-cursor" data-toggle="modal" data-target="#addColorModal">
 													<i class="material-icons">
 														add_circle_outline
 													</i>
@@ -119,7 +120,7 @@ trans('others.add_product_label'))
 												</select>
 											</div>
 											<div class="add-brand-btn" style="width:20%; float: left; padding-top: 5px;">
-												<a  data-toggle="modal" data-target="#addSizeModal">
+												<a class="hand-cursor" data-toggle="modal" data-target="#addSizeModal">
 													<i class="material-icons">
 														add_circle_outline
 													</i>
@@ -154,7 +155,7 @@ trans('others.add_product_label'))
 		                                    	<input type="text" class="form-control" name="p_unit_price" value="{{old('p_unit_price')}}" placeholder="Unit Price">
 											</div>
 											<div class="add-vendor-com-price-btn" style="width:20%; float: left; padding-top: 5px;">
-												<a data-toggle="modal" data-target="#addVendorComPrice">
+												<a class="hand-cursor" data-toggle="modal" data-target="#addVendorComPrice">
 													<i class="material-icons">
 														add_circle_outline
 													</i>
@@ -192,6 +193,77 @@ trans('others.add_product_label'))
                             	</div>
                             </div>
 
+
+
+
+
+
+
+
+							<!-- Add Vendor Company Price-->
+							<div class="modal fade" id="addVendorComPrice" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-body">
+											<div class="panel panel-default">
+												<div class="panel-heading">Vendor Company Price
+													<button type="button" class="close" data-dismiss="addVendorComPrice" aria-label="Close">
+														<span aria-hidden="true">&times;</span>
+													</button>
+												</div>
+
+												<div class="panel-body">
+
+
+													{{--<form class="form-horizontal vendor-price" role="form" method="POST" action="{{ Route('create_brand_action') }}">--}}
+
+
+
+													@if ($errors->any())
+														<div class="alert alert-danger">
+															<ul>
+																@foreach ($errors->all() as $error)
+																	<li>{{ $error }}</li>
+																@endforeach
+															</ul>
+														</div>
+													@endif
+
+													@foreach($vendorCompanyList as $vCom)
+														<input type="hidden" name="party_table_id[]" value="{{ $vCom->id  }}" >
+
+														<div class="col-md-4">
+															{{--<label class="control-label">Size Name</label>--}}
+															<input type="text" class="form-control" value="{{ $vCom->name_buyer  }}" disabled>
+														</div>
+
+														<div class="col-md-5">
+															{{--<label class="control-label col-md-12">Size Name</label>--}}
+															<input type="text" class="form-control" value="{{ $vCom->name  }}" disabled>
+														</div>
+
+														<div class="col-md-3">
+															{{--<label class="control-label">Size Name</label>--}}
+															<input type="text" class="form-control" name="v_com_price[]" value="" placeholder="Enter Price">
+														</div>
+													@endforeach
+
+													{{--<input type="hidden" name="_token" value="{{ csrf_token() }}">--}}
+
+														<div class="form-group">
+															<div class="col-md-2 col-md-offset-10">
+																<button class="btn btn-primary vendor-price-btn" style="margin-right: 15px;">
+																	{{trans('others.save_button')}}
+																</button>
+															</div>
+														</div>
+													{{--</form>--}}
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
                             
 
                             <div class="form-group">
