@@ -36,6 +36,16 @@ Route::group(
 			'uses' => 'RoleManagement@searchCompanyAction',
 		));
 
+		Route::get('/booking_list_by_booking_id/', array(
+            'as'=>'booking_list_view_by_booking_id',
+            'uses'=>'taskController\BookingListController@getBookingListByBookingId'
+		));
+
+		Route::any('/booking_list_by_search/', array(
+            'as'=>'booking_list_view_by_search',
+            'uses'=>'taskController\BookingListController@getBookingListBySearch'
+		));
+
 		// Route::get('/create_urgent_client', array(
 		// 	'as' => 'add_urgent_client',
 		// 	'uses' => 'ClientController@addUrgentClient',

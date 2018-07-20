@@ -32,4 +32,40 @@ class BookingListController extends Controller
 
   	return view('maxim.orderInput.reportFile',compact('bookingReport','companyInfo','gmtsOrSizeGroup'));
   }
+
+  public function getBookingListByBookingId(Request $request){
+
+      $bookingList = DB::table('mxp_bookingBuyer_details')
+          ->where('booking_order_id', 'like', '%'.$request->booking_id.'%')
+          ->orderBy('id','DESC')
+          ->get();
+
+  	return $bookingList;
+  }
+
+  public function getBookingListBySearch(Request $request){
+
+      $bookingList = DB::table('mxp_bookingBuyer_details');
+
+      if($request->buyer_name_search != null)
+      {
+          $bookingList->where('buyer_name','like','%'.$request->buyer_name_search.'%');
+      }
+      if($request->company_name_search != null)
+      {
+          $bookingList->where('Company_name','like','%'.$request->company_name_search.'%');
+      }
+      if($request->attention_search != null)
+      {
+          $bookingList->where('attention_invoice','like','%'.$request->attention_search.'%');
+      }
+      if($request->from_oder_date_search != null && $request->to_oder_date_search != null)
+      {
+          $bookingList->whereBetween('created_at', [$request->from_oder_date_search, $request->to_oder_date_search]);
+      }
+
+      $bookings = $bookingList->get();
+
+  	return $bookings;
+  }
 }
