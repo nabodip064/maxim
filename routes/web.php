@@ -12,356 +12,376 @@
  */
 
 Route::group(
-	[
-		// 'prefix' => LaravelLocalization::setLocale(),
-		//'middleware' => ['localeSessionRedirect', 'localizationRedirect']
-	], function () {
-		/** ADD ALL LOCALIZED ROUTES INSIDE THIS GROUP **/
+    [
+        // 'prefix' => LaravelLocalization::setLocale(),
+        //'middleware' => ['localeSessionRedirect', 'localizationRedirect']
+    ], function () {
+    /** ADD ALL LOCALIZED ROUTES INSIDE THIS GROUP **/
 
-		// Multi Language
-		Route::get('/language/', array(
-			'before' => 'csrf',
-			'as' => 'language-chooser',
-			'uses' => 'Trans\TranslationController@changeLanguage',
+    // Multi Language
+    Route::get('/language/', array(
+        'before' => 'csrf',
+        'as' => 'language-chooser',
+        'uses' => 'Trans\TranslationController@changeLanguage',
 
-		));
+    ));
 
-		Route::get('/search_trans_key/', array(
-			'as' => 'search_trans',
-			'uses' => 'Trans\TransKeyController@searchTransKey',
-		));
+    Route::get('/search_trans_key/', array(
+        'as' => 'search_trans',
+        'uses' => 'Trans\TransKeyController@searchTransKey',
+    ));
 
-		Route::get('/comapny_search/', array(
-			'as' => 'search_company',
-			'uses' => 'RoleManagement@searchCompanyAction',
-		));
+    Route::get('/comapny_search/', array(
+        'as' => 'search_company',
+        'uses' => 'RoleManagement@searchCompanyAction',
+    ));
 
-		Route::get('/booking_list_by_booking_id/', array(
-            'as'=>'booking_list_view_by_booking_id',
-            'uses'=>'taskController\BookingListController@getBookingListByBookingId'
-		));
+    Route::get('/booking_list_by_booking_id/', array(
+        'as'=>'booking_list_view_by_booking_id',
+        'uses'=>'taskController\BookingListController@getBookingListByBookingId'
+    ));
 
-		Route::any('/booking_list_by_search/', array(
-            'as'=>'booking_list_view_by_search',
-            'uses'=>'taskController\BookingListController@getBookingListBySearch'
-		));
+    Route::post('/booking_list_by_search/', array(
+        'as'=>'booking_list_view_by_search',
+        'uses'=>'taskController\BookingListController@getBookingListBySearch'
+    ));
 
-		// Route::get('/create_urgent_client', array(
-		// 	'as' => 'add_urgent_client',
-		// 	'uses' => 'ClientController@addUrgentClient',
-		// ));
+    Route::get('/challan_list_by_challan_id/', array(
+        'as'=>'challan_list_view_by_challan_id',
+        'uses'=>'taskController\ChallanListController@getChallanListByChallanId'
+    ));
 
-		Route::any('/create_urgent_client_action', array(
-			'as' => 'add_urgent_client_action',
-			'uses' => 'ClientController@addUrgentClientAction',
-		));
+    Route::post('/challan_list_by_search/', array(
+        'as'=>'challan_list_view_by_search',
+        'uses'=>'taskController\ChallanListController@getChallanListBySearch'
+    ));
 
-		Route::get('/search_purchased_client/{n?}', array(
-			'as' => 'search_client',
-			'uses' => 'product\PurchasedSearchController@search_client',
-		));
+    Route::get('/mrf_list_by_mrf_id/', array(
+        'as'=>'mrf_list_view_by_mrf_id',
+        'uses'=>'taskController\MrfListController@getMrfListByMrfId'
+    ));
 
-		Route::get('/search_purchased_invoice/', array(
-			'as' => 'search_invoice',
-			'uses' => 'product\PurchasedSearchController@search_invoice',
-		));
+    Route::post('/mrf_list_by_search/', array(
+        'as'=>'mrf_list_view_by_search',
+        'uses'=>'taskController\MrfListController@getMrfListBySearch'
+    ));
 
-		Route::get('/search_purchased_date/', array(
-			'as' => 'search_date',
-			'uses' => 'product\PurchasedSearchController@search_date',
-		));
+    // Route::get('/create_urgent_client', array(
+    // 	'as' => 'add_urgent_client',
+    // 	'uses' => 'ClientController@addUrgentClient',
+    // ));
 
-		// Super Admin Login/
+    Route::any('/create_urgent_client_action', array(
+        'as' => 'add_urgent_client_action',
+        'uses' => 'ClientController@addUrgentClientAction',
+    ));
 
-		Route::get('/registration', function () {
-			return view('auth.register');
-		});
-		Route::get('/logout', 'Auth\LoginController@logout');
+    Route::get('/search_purchased_client/{n?}', array(
+        'as' => 'search_client',
+        'uses' => 'product\PurchasedSearchController@search_client',
+    ));
 
-		Auth::routes();
+    Route::get('/search_purchased_invoice/', array(
+        'as' => 'search_invoice',
+        'uses' => 'product\PurchasedSearchController@search_invoice',
+    ));
 
-		Route::get('unauthorized', function () {
-			return view('notify.unauthorized');
-		});
+    Route::get('/search_purchased_date/', array(
+        'as' => 'search_date',
+        'uses' => 'product\PurchasedSearchController@search_date',
+    ));
 
-		// Super Admin Access Route
-		Route::group(['middleware' => 'auth'], function () {
+    // Super Admin Login/
 
-			Route::get('/', 'HomeController@index');
+    Route::get('/registration', function () {
+        return view('auth.register');
+    });
+    Route::get('/logout', 'Auth\LoginController@logout');
 
-			Route::get('/dashboard', [
-				'as' => 'dashboard_view',
-				'uses' => 'HomeController@dashboard',
-			]);
-			Route::get('/profile', [
-				'as' => 'user_profile_view',
-				'uses' => 'UserProfileController@profile',
-			]);
-			Route::post('/profile', [
-				'as' => 'user_profile_action',
-				'uses' => 'UserProfileController@profileUpdate',
-			]);
+    Auth::routes();
 
-			Route::group(['middleware' => 'routeAccess'], function () {
-				Route::group(['prefix' => 'super-admin'], function () {
+    Route::get('unauthorized', function () {
+        return view('notify.unauthorized');
+    });
 
-					Route::group(['middleware' => 'onlySuperAdmin'], function () {
-						//Company Account Management
-						Route::get('/opencompanyacc', [
-							'as' => 'create_company_acc_view',
-							'uses' => 'CompanyManagement@companyAccOpeningForm',
-						]);
-						Route::post('/opencompanyacc', [
-							'as' => 'create_company_acc_action',
-							'uses' => 'CompanyManagement@openCompanyAcc',
-						]);
-						Route::get('companylist', [
-							'as' => 'company_list_view',
-							'uses' => 'CompanyManagement@companyList',
-						]);
-						Route::get('/updatecompanyacc/{com_id?}', [
-							'as' => 'update_company_acc_view',
-							'uses' => 'CompanyManagement@updateCompanyAccForm',
-						]);
-						Route::post('/updatecompanyacc', [
-							'as' => 'update_company_acc_action',
-							'uses' => 'CompanyManagement@updateCompanyAcc',
-						]);
-						Route::get('/deletecompanyacc/{com_id?}', [
-							'as' => 'delete_company_acc_action',
-							'uses' => 'CompanyManagement@deleteCompanyAcc',
-						]);
-					});
-					// End of onlySuperAdmin Middleware
+    // Super Admin Access Route
+    Route::group(['middleware' => 'auth'], function () {
 
-					// Role Management
-					Route::get('/addrole',
-						[
-							'as' => 'add_role_view',
-							'uses' => 'RoleManagement@addRoleForm',
-						]);
+        Route::get('/', 'HomeController@index');
 
-					Route::post('/addrole',
-						[
-							'as' => 'add_role_action',
-							'uses' => 'RoleManagement@addRole',
-						]);
-					Route::get('/rolelist',
-						[
-							'as' => 'role_list_view',
-							'uses' => 'RoleManagement@roleList',
-						]);
-					Route::get('/role/delete/{id?}',
-						[
-							'as' => 'role_delete_action',
-							'uses' => 'RoleManagement@deleteRole',
-						]);
+        Route::get('/dashboard', [
+            'as' => 'dashboard_view',
+            'uses' => 'HomeController@dashboard',
+        ]);
+        Route::get('/profile', [
+            'as' => 'user_profile_view',
+            'uses' => 'UserProfileController@profile',
+        ]);
+        Route::post('/profile', [
+            'as' => 'user_profile_action',
+            'uses' => 'UserProfileController@profileUpdate',
+        ]);
 
-					Route::get('/role/update/{id?}',
-						[
-							'as' => 'role_update_view',
-							'uses' => 'RoleManagement@updateForm',
-						]);
-					Route::post('/role/update/{id?}',
-						[
-							'as' => 'role_update_action',
-							'uses' => 'RoleManagement@updateRole',
-						]);
+        Route::group(['middleware' => 'routeAccess'], function () {
+            Route::group(['prefix' => 'super-admin'], function () {
 
-					Route::get('role/permission',
-						[
-							'as' => 'role_permission_view',
-							'uses' => 'RoleManagement@rolePermissionForm',
-						]);
-					Route::post('role/permission',
-						[
-							'as' => 'role_permission_action',
-							'uses' => 'RoleManagement@rolePermission',
-						]);
-					Route::any('permissions',
-						[
-							'as' => 'get_role_permission_view',
-							'uses' => 'RoleManagement@getPermissions',
-						]);
+                Route::group(['middleware' => 'onlySuperAdmin'], function () {
+                    //Company Account Management
+                    Route::get('/opencompanyacc', [
+                        'as' => 'create_company_acc_view',
+                        'uses' => 'CompanyManagement@companyAccOpeningForm',
+                    ]);
+                    Route::post('/opencompanyacc', [
+                        'as' => 'create_company_acc_action',
+                        'uses' => 'CompanyManagement@openCompanyAcc',
+                    ]);
+                    Route::get('companylist', [
+                        'as' => 'company_list_view',
+                        'uses' => 'CompanyManagement@companyList',
+                    ]);
+                    Route::get('/updatecompanyacc/{com_id?}', [
+                        'as' => 'update_company_acc_view',
+                        'uses' => 'CompanyManagement@updateCompanyAccForm',
+                    ]);
+                    Route::post('/updatecompanyacc', [
+                        'as' => 'update_company_acc_action',
+                        'uses' => 'CompanyManagement@updateCompanyAcc',
+                    ]);
+                    Route::get('/deletecompanyacc/{com_id?}', [
+                        'as' => 'delete_company_acc_action',
+                        'uses' => 'CompanyManagement@deleteCompanyAcc',
+                    ]);
+                });
+                // End of onlySuperAdmin Middleware
 
-					Route::post('role/permission/update',
-						[
-							'as' => 'role_permission_update_view',
-							'uses' => 'RoleManagement@rolePermissionForm',
-						]);
+                // Role Management
+                Route::get('/addrole',
+                    [
+                        'as' => 'add_role_view',
+                        'uses' => 'RoleManagement@addRoleForm',
+                    ]);
 
-					Route::get('role/permission/list',
-						[
-							'as' => 'role_permission_list_view',
-							'uses' => 'RoleManagement@rolePermissionList',
-						]);
-					// End of Role Management
+                Route::post('/addrole',
+                    [
+                        'as' => 'add_role_action',
+                        'uses' => 'RoleManagement@addRole',
+                    ]);
+                Route::get('/rolelist',
+                    [
+                        'as' => 'role_list_view',
+                        'uses' => 'RoleManagement@roleList',
+                    ]);
+                Route::get('/role/delete/{id?}',
+                    [
+                        'as' => 'role_delete_action',
+                        'uses' => 'RoleManagement@deleteRole',
+                    ]);
 
-					// User Management
-					Route::get('user/add',
-						[
-							'as' => 'create_user_view',
-							'uses' => 'UserController@createUserForm',
-						]);
-					Route::post('user/add',
-						[
-							'as' => 'create_user_action',
-							'uses' => 'UserController@createUser',
-						]);
+                Route::get('/role/update/{id?}',
+                    [
+                        'as' => 'role_update_view',
+                        'uses' => 'RoleManagement@updateForm',
+                    ]);
+                Route::post('/role/update/{id?}',
+                    [
+                        'as' => 'role_update_action',
+                        'uses' => 'RoleManagement@updateRole',
+                    ]);
 
-					Route::get('user/list',
-						[
-							'as' => 'user_list_view',
-							'uses' => 'UserController@userList',
-						]);
-					Route::get('user/update/{id?}',
-						[
-							'as' => 'company_user_update_view',
-							'uses' => 'UserController@updateUserForm',
-						]);
-					Route::post('user/update',
-						[
-							'as' => 'company_user_update_action',
-							'uses' => 'UserController@updateUser',
-						]);
-					Route::get('user/delete/{id?}',
-						[
-							'as' => 'company_user_delete_action',
-							'uses' => 'UserController@deleteUser',
-						]);
+                Route::get('role/permission',
+                    [
+                        'as' => 'role_permission_view',
+                        'uses' => 'RoleManagement@rolePermissionForm',
+                    ]);
+                Route::post('role/permission',
+                    [
+                        'as' => 'role_permission_action',
+                        'uses' => 'RoleManagement@rolePermission',
+                    ]);
+                Route::any('permissions',
+                    [
+                        'as' => 'get_role_permission_view',
+                        'uses' => 'RoleManagement@getPermissions',
+                    ]);
 
-					Route::any('getrolelist', [
-						// 'as' => 'get_role_list_view',
-						'uses' => 'RoleManagement@getRoleList',
-					]);
-					// End of user management
+                Route::post('role/permission/update',
+                    [
+                        'as' => 'role_permission_update_view',
+                        'uses' => 'RoleManagement@rolePermissionForm',
+                    ]);
 
-				});
-				// End of super-admin prefix
+                Route::get('role/permission/list',
+                    [
+                        'as' => 'role_permission_list_view',
+                        'uses' => 'RoleManagement@rolePermissionList',
+                    ]);
+                // End of Role Management
 
-				// --------- translation language **********
-				Route::group(['prefix' => '_translation'], function () {
-					Route::get('/uploadTranslationFile',
-						[
-							'as' => 'update_language',
-							'uses' => 'Trans\UploadFileController@updateFileView',
-						]);
+                // User Management
+                Route::get('user/add',
+                    [
+                        'as' => 'create_user_view',
+                        'uses' => 'UserController@createUserForm',
+                    ]);
+                Route::post('user/add',
+                    [
+                        'as' => 'create_user_action',
+                        'uses' => 'UserController@createUser',
+                    ]);
 
-					Route::get('/successfullyUploaded',
-						[
-							'as' => 'sure_upload',
-							'uses' => 'Trans\UploadFileController@updateLangFiles',
-						]);
+                Route::get('user/list',
+                    [
+                        'as' => 'user_list_view',
+                        'uses' => 'UserController@userList',
+                    ]);
+                Route::get('user/update/{id?}',
+                    [
+                        'as' => 'company_user_update_view',
+                        'uses' => 'UserController@updateUserForm',
+                    ]);
+                Route::post('user/update',
+                    [
+                        'as' => 'company_user_update_action',
+                        'uses' => 'UserController@updateUser',
+                    ]);
+                Route::get('user/delete/{id?}',
+                    [
+                        'as' => 'company_user_delete_action',
+                        'uses' => 'UserController@deleteUser',
+                    ]);
 
-					Route::group(['prefix' => 'language'], function () {
-						Route::get('/',
-							[
-								'as' => 'manage_language',
-								'uses' => 'Trans\TranslationController@languagesProvider',
-							]);
+                Route::any('getrolelist', [
+                    // 'as' => 'get_role_list_view',
+                    'uses' => 'RoleManagement@getRoleList',
+                ]);
+                // End of user management
 
-						Route::match(['get', 'post'], '/create',
-							[
-								'as' => 'create_locale_action',
-								'uses' => 'Trans\ManageLocaleController@createLocale',
-							]);
+            });
+            // End of super-admin prefix
 
-						Route::match(['get', 'post'], '/update/{id?}',
-							[
-								'as' => 'update_locale_action',
-								'uses' => 'Trans\ManageLocaleController@updateLocale',
-							]);
+            // --------- translation language **********
+            Route::group(['prefix' => '_translation'], function () {
+                Route::get('/uploadTranslationFile',
+                    [
+                        'as' => 'update_language',
+                        'uses' => 'Trans\UploadFileController@updateFileView',
+                    ]);
 
-					});
+                Route::get('/successfullyUploaded',
+                    [
+                        'as' => 'sure_upload',
+                        'uses' => 'Trans\UploadFileController@updateLangFiles',
+                    ]);
 
-					Route::group(['prefix' => 'manage'], function () {
-						Route::match(['get', 'post'], '/create',
-							[
-								'as' => 'create_translation_action',
-								'uses' => 'Trans\TransKeyController@createTrans',
-							]);
+                Route::group(['prefix' => 'language'], function () {
+                    Route::get('/',
+                        [
+                            'as' => 'manage_language',
+                            'uses' => 'Trans\TranslationController@languagesProvider',
+                        ]);
 
-						Route::get('/{p?}',
-							[
-								'as' => 'manage_translation',
-								'uses' => 'Trans\TranslationController@manageTranslationKey',
-							]);
+                    Route::match(['get', 'post'], '/create',
+                        [
+                            'as' => 'create_locale_action',
+                            'uses' => 'Trans\ManageLocaleController@createLocale',
+                        ]);
 
-						Route::get('/update/{id?}',
-							[
-								'as' => 'update_translation_action',
-								'uses' => 'Trans\TransKeyController@updateTrans',
-							]);
+                    Route::match(['get', 'post'], '/update/{id?}',
+                        [
+                            'as' => 'update_locale_action',
+                            'uses' => 'Trans\ManageLocaleController@updateLocale',
+                        ]);
 
-						Route::post('/updatePost/{id?}',
-							[
-								'as' => 'update_translation_key_action',
-								'uses' => 'Trans\TransKeyController@updatedTransAdd',
-							]);
+                });
 
-						Route::get('/delete/{id?}',
-							[
-								'as' => 'delete_translation_action',
-								'uses' => 'Trans\TransKeyController@deleteTrans',
-							]);
-					});
-				});
-				// --------- end translation language **********
+                Route::group(['prefix' => 'manage'], function () {
+                    Route::match(['get', 'post'], '/create',
+                        [
+                            'as' => 'create_translation_action',
+                            'uses' => 'Trans\TransKeyController@createTrans',
+                        ]);
 
-				// --------- start product prefix **********
+                    Route::get('/{p?}',
+                        [
+                            'as' => 'manage_translation',
+                            'uses' => 'Trans\TranslationController@manageTranslationKey',
+                        ]);
 
-				
-				// End of product Prefix
+                    Route::get('/update/{id?}',
+                        [
+                            'as' => 'update_translation_action',
+                            'uses' => 'Trans\TransKeyController@updateTrans',
+                        ]);
 
-				// Client/Company Information
-				Route::get('client_com/list',
-					[
-						'as' => 'client_com_list_view',
-						'uses' => 'ClientController@clientComList',
-					]);
-				Route::get('client_com/add',
-					[
-						'as' => 'client_com_add_view',
-						'uses' => 'ClientController@createClientComForm',
-					]);
-				Route::post('client_com/add',
-					[
-						'as' => 'client_com_add_action',
-						'uses' => 'ClientController@createClientCom',
-					]);
-				Route::get('client_com/update/{id?}',
-					[
-						'as' => 'client_com_update_view',
-						'uses' => 'ClientController@updateClientComForm',
-					]);
-				Route::post('client_com/update/{id?}',
-					[
-						'as' => 'client_com_update_action',
-						'uses' => 'ClientController@updateClientCom',
-					]);
-				Route::get('client_com/delete/{id?}',
-					[
-						'as' => 'client_com_delete_action',
-						'uses' => 'ClientController@deleteClientCom',
-					]);
+                    Route::post('/updatePost/{id?}',
+                        [
+                            'as' => 'update_translation_key_action',
+                            'uses' => 'Trans\TransKeyController@updatedTransAdd',
+                        ]);
 
-				//End of Client/Company Information
+                    Route::get('/delete/{id?}',
+                        [
+                            'as' => 'delete_translation_action',
+                            'uses' => 'Trans\TransKeyController@deleteTrans',
+                        ]);
+                });
+            });
+            // --------- end translation language **********
 
-				// Stock_Management.............
-
-				
-
-					// End Store----------------------------------------
-					// Stock Start----------------------------------------
+            // --------- start product prefix **********
 
 
-				});
-			});
-			// End of RouteAccess Middleware
+            // End of product Prefix
 
-		});
-		// End of Auth Middleware
-	
+            // Client/Company Information
+            Route::get('client_com/list',
+                [
+                    'as' => 'client_com_list_view',
+                    'uses' => 'ClientController@clientComList',
+                ]);
+            Route::get('client_com/add',
+                [
+                    'as' => 'client_com_add_view',
+                    'uses' => 'ClientController@createClientComForm',
+                ]);
+            Route::post('client_com/add',
+                [
+                    'as' => 'client_com_add_action',
+                    'uses' => 'ClientController@createClientCom',
+                ]);
+            Route::get('client_com/update/{id?}',
+                [
+                    'as' => 'client_com_update_view',
+                    'uses' => 'ClientController@updateClientComForm',
+                ]);
+            Route::post('client_com/update/{id?}',
+                [
+                    'as' => 'client_com_update_action',
+                    'uses' => 'ClientController@updateClientCom',
+                ]);
+            Route::get('client_com/delete/{id?}',
+                [
+                    'as' => 'client_com_delete_action',
+                    'uses' => 'ClientController@deleteClientCom',
+                ]);
+
+            //End of Client/Company Information
+
+            // Stock_Management.............
+
+
+
+            // End Store----------------------------------------
+            // Stock Start----------------------------------------
+
+
+        });
+    });
+    // End of RouteAccess Middleware
+
+});
+// End of Auth Middleware
+
 //  ******** These are so important for Nabodip.... Please don't remove these... ********//
 /*
 INSERT INTO `mxp_menu` (`menu_id`, `name`, `route_name`, `description`, `parent_id`, `is_active`, `order_id`, `created_at`, `updated_at`) VALUES
@@ -396,7 +416,7 @@ INSERT INTO `mxp_user_role_menu` (`role_menu_id`, `role_id`, `menu_id`, `company
 Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['middleware' => 'routeAccess'], function () {
-        
+
         // party routes
 
         Route::get('list/party',
@@ -432,7 +452,7 @@ Route::group(['middleware' => 'auth'], function () {
                 'as'=>'party_delete_action',
                 'uses'=>'PartyController@deleteParty'
             ]);
-        
+
         // product routes
 
         Route::get('product/list',
@@ -474,13 +494,13 @@ Route::group(['middleware' => 'auth'], function () {
                 'uses'=>'ProductController@updateProduct'
             ]);
 
-         /* Brand Routes */
+        /* Brand Routes */
 
         Route::get('/brand/list',
             [
                 'as'=>'brand_list_view',
                 'uses'=>'BrandController@brandView'
-            ]); 
+            ]);
         Route::get('/add/brand',
             [
                 'as'=>'addbrand_view',
@@ -547,12 +567,12 @@ Route::group(['middleware' => 'auth'], function () {
                 'uses'=>'ProductSizeController@updateSizeView'
             ]);
 
-       
+
 
 
         /*page header routes*/
 
-          Route::get('list/header',
+        Route::get('list/header',
             [
                 'as'=>'page_header_view',
                 'uses'=>'HeaderController@index'
@@ -592,7 +612,7 @@ Route::group(['middleware' => 'auth'], function () {
             [
                 'as'=>'page_footer_view',
                 'uses'=>'PageFooterController@pageFooterView'
-            ]); 
+            ]);
         Route::get('addPagefooter',
             [
                 'as'=>'add_footer_title_view',
@@ -609,12 +629,12 @@ Route::group(['middleware' => 'auth'], function () {
             [
                 'as'=>'update_title_view',
                 'uses'=>'PageFooterController@updateFooterView'
-            ]); 
+            ]);
         Route::post('update/footer/title/{footer_id?}',
             [
                 'as'=>'updatefooter_action',
                 'uses'=>'PageFooterController@updateFooter'
-            ]); 
+            ]);
 
         Route::get('deletefooteraction/{footer_id?}',
             [
@@ -689,16 +709,16 @@ Route::group(['middleware' => 'auth'], function () {
                 'uses'=>'ColorController@deleteColorAction'
             ]);
 
-     } );
+    } );
 });
 
 /* all bill copy order genarates routes */
-       
+
 
 Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['middleware' => 'routeAccess'], function () {
-    	
+
         Route::get('bill/copy',
             [
                 'as'=>'bill_copy_view',
@@ -759,10 +779,10 @@ Route::group(['middleware' => 'auth'], function () {
             ]);
 
         Route::get('create/Ipo',
-         [
-          'as'=>'ipo_view',
-          'uses'=>'PrintController\IPOController@ipo_view'
-         ]);
+            [
+                'as'=>'ipo_view',
+                'uses'=>'PrintController\IPOController@ipo_view'
+            ]);
         Route::post('action/create/ipo',
             [
                 'as'=>'ipo_bill_action',
@@ -777,119 +797,119 @@ Route::group(['middleware' => 'auth'], function () {
             [
                 'as'=>'input_order_action',
                 'uses'=>'PrintController\OrderInput@orderInputAction'
-            ]);        
+            ]);
     });
     Route::any('/get/product/details/booking',
-            [
-                'as'=>'get_product_details',
-                'uses'=>'taskController\BookingController@orderInputDetails'
-            ]);
+        [
+            'as'=>'get_product_details',
+            'uses'=>'taskController\BookingController@orderInputDetails'
+        ]);
     Route::any('/get/product/details',
-            [
-                'as'=>'get_product_details',
-                'uses'=>'PrintController\OrderInput@orderInputDetails'
-            ]);
+        [
+            'as'=>'get_product_details',
+            'uses'=>'PrintController\OrderInput@orderInputDetails'
+        ]);
 });
 
-	/*there are all Task Routes*/
+/*there are all Task Routes*/
 
-	Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => 'auth'], function () {
 
-	    Route::group(['middleware' => 'routeAccess'], function () {
-	    	Route::post('submited/task',
+    Route::group(['middleware' => 'routeAccess'], function () {
+        Route::post('submited/task',
             [
                 'as'=>'task_action',
                 'uses'=>'taskController\TaskController@taskActionOrsubmited'
             ]);
 
-	    	Route::get('submited/task',
+        Route::get('submited/task',
             [
                 'as'=>'task_action',
                 'uses'=>'taskController\TaskController@gettaskActionOrsubmited'
             ]);
 
-            Route::any('get/itemcode',
+        Route::any('get/itemcode',
             [
                 'as'=>'get_item_details',
                 'uses'=>'taskController\TaskController@getItemCode'
             ]);
 
-            Route::any('get/ordercode',
+        Route::any('get/ordercode',
             [
                 'as'=>'get_order_details',
                 'uses'=>'taskController\BookingController@getordercode'
             ]);
-            
-	    	/** there are all booking routes here **/
 
-            Route::any('booking/order/action',
+        /** there are all booking routes here **/
+
+        Route::any('booking/order/action',
             [
                 'as'=>'booking_order_action',
                 'uses'=>'taskController\BookingController@addBooking'
             ]);
 
-            Route::get('booking/list/list',
+        Route::get('booking/list/list',
             [
                 'as'=>'booking_list_view',
                 'uses'=>'taskController\BookingController@addBooking'
             ]);
 
-            /** there are all booking list routes here **/
+        /** there are all booking list routes here **/
 
-             Route::get('booking/list/view',
+        Route::get('booking/list/view',
             [
                 'as'=>'booking_list_action_task',
                 'uses'=>'taskController\BookingListController@showBookingReport'
             ]);
 
-            /** there are all challan routes here **/
+        /** there are all challan routes here **/
 
-            Route::post('task/multiple/challanaction',
+        Route::post('task/multiple/challanaction',
             [
                 'as'=>'multiple_challan_action_task',
                 'uses'=>'taskController\ChallanController@addChallan'
             ]);
 
-            Route::get('view/challan/list',
+        Route::get('view/challan/list',
             [
                 'as'=>'challan_list_view',
                 'uses'=>'taskController\ChallanListController@challanListView'
             ]);
-            Route::get('challan/list/action/task',
+        Route::get('challan/list/action/task',
             [
                 'as'=>'challan_list_action_task',
                 'uses'=>'taskController\ChallanListController@showChallanReport'
             ]);
 
 
-            /** there are all MRF routes here **/
+        /** there are all MRF routes here **/
 
-            Route::post('task/mrf/task',
+        Route::post('task/mrf/task',
             [
                 'as'=>'mrf_action_task',
                 'uses'=>'taskController\MrfController@addMrf'
             ]);
 
-            Route::get('task/mrf/task/list',
+        Route::get('task/mrf/task/list',
             [
                 'as'=>'mrf_list_action_task',
                 'uses'=>'taskController\MrfListController@showMrfReport'
             ]);
 
-            /** there are all task routes here **/
-	    Route::any('/get/buyer/company',
+        /** there are all task routes here **/
+        Route::any('/get/buyer/company',
             [
                 'as'=>'get_buyer_company',
                 'uses'=>'taskController\TaskController@getBuyerCompany'
             ]);
-	    });
-	});
+    });
+});
 
-	/*there are all Production Routes*/
+/*there are all Production Routes*/
 
-	Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => 'auth'], function () {
 
-	    Route::group(['middleware' => 'routeAccess'], function () {
+    Route::group(['middleware' => 'routeAccess'], function () {
 
             Route::get('booking/list/list',
             [
@@ -902,7 +922,6 @@ Route::group(['middleware' => 'auth'], function () {
                 'as'=>'mrf_list_view',
                 'uses'=>'taskController\MrfListController@mrfListView'
             ]);
-
             Route::get('permission/task/assign',
             [
                 'as'=>'permission_task_assign',
@@ -916,5 +935,5 @@ Route::group(['middleware' => 'auth'], function () {
                 'uses'=>'taskAssignController@taskassignaction'
             ]);
 
-	    });
-	});
+    });
+});
