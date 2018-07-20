@@ -151,15 +151,29 @@ trans('others.add_product_label'))
 		                            <div class="form-group">
 		                                <label class="col-md-4 control-label">{{ trans('others.product_unit_price_label') }}</label>
 		                                <div class="col-md-6">
-											<div style="width:80%; float: left;">
+											<div style="width:100%; float: left;">
 		                                    	<input type="text" class="form-control" name="p_unit_price" value="{{old('p_unit_price')}}" placeholder="Unit Price">
 											</div>
-											<div class="add-vendor-com-price-btn" style="width:20%; float: left; padding-top: 5px;">
-												<a class="hand-cursor" data-toggle="modal" data-target="#addVendorComPrice">
+											<div class="add-vendor-com-price-btn" style="width:100%; float: left; padding-top: 5px;">
+
+												<a style="float:left;" class="hand-cursor" data-toggle="modal" data-target="#addVendorComPrice">
 													<i class="material-icons">
 														add_circle_outline
 													</i>
 												</a>
+												<small style="float: left; padding-top: 4px;">
+													Vendor Price
+												</small>
+												
+
+												<a style=" padding-left:5px; float: left;" class="hand-cursor" data-toggle="modal" data-target="#addSupplierPrice">
+													<i class="material-icons">
+														add_circle_outline
+													</i>
+												</a>
+												<small style="float: left; padding-top: 4px;">
+													Vendor Price
+												</small>
 											</div>
 		                                </div>
 		                            </div>
@@ -258,6 +272,61 @@ trans('others.add_product_label'))
 															</div>
 														</div>
 													{{--</form>--}}
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+
+
+
+
+							<!-- Add Supplier Price-->
+							<div class="modal fade" id="addSupplierPrice" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-body">
+											<div class="panel panel-default">
+												<div class="panel-heading">Supplier Price
+													<button type="button" class="close" data-dismiss="addSupplierComPrice" aria-label="Close">
+														<span aria-hidden="true">&times;</span>
+													</button>
+												</div>
+
+												<div class="panel-body">
+
+													@if ($errors->any())
+														<div class="alert alert-danger">
+															<ul>
+																@foreach ($errors->all() as $error)
+																	<li>{{ $error }}</li>
+																@endforeach
+															</ul>
+														</div>
+													@endif
+
+													@foreach($supplierList as $supplier)
+														<input type="hidden" name="supplier_id[]" value="{{ $supplier->supplier_id  }}" >
+
+														<div class="col-md-5 col-md-offset-2">
+															<input type="text" class="form-control" value="{{ $supplier->name  }}" disabled>
+														</div>
+
+														<div class="col-md-4">
+															<input type="text" class="form-control" name="supplier_price[]" value="" placeholder="Enter Price">
+														</div>
+													@endforeach
+
+
+													<div class="form-group">
+														<div class="col-md-2 col-md-offset-10">
+															<button class="btn btn-primary vendor-price-btn" style="margin-right: 15px;">
+																{{trans('others.save_button')}}
+															</button>
+														</div>
+													</div>
 												</div>
 											</div>
 										</div>

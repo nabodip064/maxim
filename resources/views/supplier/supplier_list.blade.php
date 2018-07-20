@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
-@section('page_heading',
-trans('others.party_list_label'))
+{{--@section('page_heading', trans('others.party_list_label'))--}}
+@section('page_heading', 'Supplier List')
 @section('section')
 <style type="text/css">
 	.top-btn-pro{
@@ -24,9 +24,10 @@ trans('others.party_list_label'))
         @if(Session::has('party_updated'))
                 @include('widgets.alert', array('class'=>'success', 'message'=> Session::get('party_updated') ))
         @endif
+
  <div class="col-sm-3 top-btn-pro">
- 	<a href="{{ Route('party_create') }}" class="btn btn-success form-control">
-        {{trans('others.add_party_label')}}
+ 	<a href="{{ Route('supplier_add_view') }}" class="btn btn-success form-control">
+        Add Supplier
     </a>
  </div>
 <div class="col-sm-6">
@@ -51,50 +52,34 @@ trans('others.party_list_label'))
                 <table class="table table-bordered" id="tblSearch">
                 <thead>
                     <tr>
-                        <th class="">Vendor ID</th>
-                        <th class="">Company Name</th>
-                        <th class="">Buyer</th>
-                        <th class="">Address -1 (Invoice)</th>
-                        <th class="">Address -2 (Invoice)</th>
-                        <th class="">Attention (Invoice)</th>
-                        <th class="">Mobile (Invoice)</th>
-                        <!-- <th class="">Fax(Invoice)</th>
-                        <th class="">Address(Delivery)</th>
-                        <th class="">Mobile(Delivery)</th>
-                        <th class="">Fax(Delivery)</th>
-                        <th class="">Description</th> -->
+                        <th class="">Sl</th>
+                        <th class="">Supplier Name</th>
+                        <th class="">Contact</th>
+                        <th class="">Address</th>
                         <th class="">Status</th>
                         <th class="">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                  @foreach($party_list as $party)
-                  <tr>  
-                    <td>{{$party->party_id}}</td>
-                    <td>{{$party->name}}</td>
-                    <td>{{$party->name_buyer}}</td>
-                    <td>{{$party->address_part1_invoice}}</td>
-                    <td>{{$party->address_part2_invoice}}</td>
-                    <td>{{$party->attention_invoice}}</td>
-                    <td>{{$party->mobile_invoice}}</td>
+                  @foreach($suppliers as $key => $supplier)
+                  <tr>
+                    <td>{{$key+1}}</td>
+                    <td>{{$supplier->name}}</td>
+                    <td>{{$supplier->phone}}</td>
+                    <td>{{$supplier->address}}</td>
 
-                    <!-- <td>{{$party->fax_invoice}}</td>
-                    <td>{{$party->address_part1_delivery}}</td>
-                    <td>{{$party->mobile_delivery}}</td>
-                    <td>{{$party->fax_delivery}}</td>
-                    <td>{{$party->description_1}}</td> -->
                     <td>
-                        {{($party->status == 1)? trans("others.action_active_label"):trans("others.action_inactive_label")}}
+                        {{($supplier->status == 1)? trans("others.action_active_label"):trans("others.action_inactive_label")}}
                     </td>
 
                     <td>
                         <table>
                           <tr>
                               <td class="">
-                                  <a href="{{ Route('party_edit_view')}}/{{$party->id}}" class="btn btn-success">edit</a>
+                                  <a href="{{ Route('supplier_update')}}/{{$supplier->supplier_id}}" class="btn btn-success">edit</a>
                               </td>   
                               <td class="td-pad">
-                                  <a href="{{ Route('party_delete_action')}}/{{$party->id}}" class="btn btn-danger">delete</a>
+                                  <a href="{{ Route('supplier_delete_action')}}/{{$supplier->supplier_id}}" class="btn btn-danger">delete</a>
                               </td>
                           </tr>
                         </table>
@@ -104,7 +89,7 @@ trans('others.party_list_label'))
                     
                 </tbody>
             </table>
-             {{$party_list->links()}}
+             {{--{{$party_list->links()}}--}}
             </div>    
            
         

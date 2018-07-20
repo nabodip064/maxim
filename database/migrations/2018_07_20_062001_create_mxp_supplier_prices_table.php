@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateVendorPricesTable extends Migration
+class CreateMxpSupplierPricesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateVendorPricesTable extends Migration
      */
     public function up()
     {
-        Schema::create('mxp_vendor_prices', function (Blueprint $table) {
-            $table->increments('price_id');
-            $table->integer('vandor_id');
-            $table->integer('company_id');
-            $table->float('vendor_com_price')->nullable();
+        Schema::create('mxp_supplier_prices', function (Blueprint $table) {
+            $table->increments('supplier_price_id');
+            $table->integer('supplier_id');
+            $table->integer('product_id');
+            $table->float('supplier_price')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateVendorPricesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('vendor_prices');
+        Schema::dropIfExists('mxp_supplier_prices');
     }
 }
