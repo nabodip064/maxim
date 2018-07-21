@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
+use App\MxpTaskRole;
 
 class HomeController extends Controller {
 	/**
@@ -26,6 +27,29 @@ class HomeController extends Controller {
 	}
 
 	public function dashboard() {
+
+		$taskRoleData = array();
+		$user_role_id = session()->get('user_role_id');
+		if(isset($user_role_id) && !empty($user_role_id)){
+			$selectedTaskRole = DB::select('SELECT * FROM `mxp_task_role` WHERE `role_id` = '.$user_role_id);
+			if(isset($selectedTaskRole) && !empty($selectedTaskRole)){
+			    foreach ($selectedTaskRole as $srk => $srvalue) {
+			        if(isset($srvalue->task) && !empty($srvalue->task)){
+			            $taskRoleData = explode(",", $srvalue->task);
+			        }
+			    }
+			}
+		}
+		$taskAccessList = array();
+		if(isset($taskRoleData) && !empty($taskRoleData)){
+			foreach ($taskRoleData as $taskKey => $taskValue) {
+				$selectedTaskRole = DB::select('SELECT `name` FROM `mxp_task` WHERE `id_mxp_task` = '.$taskValue);
+				if(isset($selectedTaskRole[0]->name) && !empty($selectedTaskRole[0]->name)){
+					$taskAccessList[] = $selectedTaskRole[0]->name;
+				}
+			}
+		}
+
 		$company_id = '';
 		if (session()->get('user_id') == 1 && session()->get('user_type') == "super_admin") {
 			$user_role_id = 1;
@@ -68,12 +92,10 @@ class HomeController extends Controller {
 			}
 
 		}
-
 		session()->put('UserMenus', $menus_array);
 
 
-
 		$selectBuyer = DB::table('mxp_party')->where('user_id',Auth::user()->user_id)->get();
-		return view('dashboard',compact('selectBuyer'));
+		return view('dashboard',compact('selectBuyer','taskAccessList'));
 	}
 }
