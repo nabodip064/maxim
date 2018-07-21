@@ -13,59 +13,79 @@ use DB;
 
 class BookingListController extends Controller
 {
-  public function bookingListView(){
+    public function bookingListView(){
 
-    $bookingList = DB::table('mxp_bookingBuyer_details')
-                      ->groupBy('booking_order_id')
-                      ->orderBy('id','DESC')
-                      ->paginate(15);
+        $bookingList = DB::table('mxp_bookingBuyer_details')
+            ->groupBy('booking_order_id')
+            ->orderBy('id','DESC')
+            ->paginate(15);
 
-    return view('maxim.booking_list.booking_list_page',compact('bookingList'));
-  }
+        return view('maxim.booking_list.booking_list_page',compact('bookingList'));
+    }
 
-  public function showBookingReport(Request $request){
-  	$bookingReport = DB::select("call getBookinAndBuyerDeatils('".$request->bid."')");
+    public function showBookingReport(Request $request){
+        $bookingReport = DB::select("call getBookinAndBuyerDeatils('".$request->bid."')");
 
-    $companyInfo = DB::table('mxp_header')->where('header_type',11)->get();
-  	
-  	$gmtsOrSizeGroup = DB::select("SELECT gmts_color,GROUP_CONCAT(item_size) as itemSize,GROUP_CONCAT(item_quantity) as quantity from mxp_booking WHERE booking_order_id = '".$request->bid."' GROUP BY gmts_color");
+        $companyInfo = DB::table('mxp_header')->where('header_type',11)->get();
 
-  	return view('maxim.orderInput.reportFile',compact('bookingReport','companyInfo','gmtsOrSizeGroup'));
-  }
+        $gmtsOrSizeGroup = DB::select("SELECT gmts_color,GROUP_CONCAT(item_size) as itemSize,GROUP_CONCAT(item_quantity) as quantity from mxp_booking WHERE booking_order_id = '".$request->bid."' GROUP BY gmts_color");
 
-  public function getBookingListByBookingId(Request $request){
+        return view('maxim.orderInput.reportFile',compact('bookingReport','companyInfo','gmtsOrSizeGroup'));
+    }
 
-      $bookingList = DB::table('mxp_bookingBuyer_details')
-          ->where('booking_order_id', 'like', '%'.$request->booking_id.'%')
-          ->orderBy('id','DESC')
-          ->get();
+    public function getBookingListByBookingId(Request $request){
 
-  	return $bookingList;
-  }
+        $bookingList = DB::table('mxp_bookingBuyer_details')
+            ->where('booking_order_id', 'like', '%'.$request->booking_id.'%')
+            ->orderBy('id','DESC')
+            ->get();
 
-  public function getBookingListBySearch(Request $request){
+        return $bookingList;
+    }
 
-      $bookingList = DB::table('mxp_bookingBuyer_details');
+    public function getBookingListBySearch(Request $request){
 
-      if($request->buyer_name_search != null)
-      {
-          $bookingList->where('buyer_name','like','%'.$request->buyer_name_search.'%');
-      }
-      if($request->company_name_search != null)
-      {
-          $bookingList->where('Company_name','like','%'.$request->company_name_search.'%');
-      }
-      if($request->attention_search != null)
-      {
-          $bookingList->where('attention_invoice','like','%'.$request->attention_search.'%');
-      }
-      if($request->from_oder_date_search != null && $request->to_oder_date_search != null)
-      {
-          $bookingList->whereBetween('created_at', [$request->from_oder_date_search, $request->to_oder_date_search]);
-      }
+        $bookingList = DB::table('mxp_bookingBuyer_details');
+        $checkValidation = false;
 
-      $bookings = $bookingList->get();
+        if($request->buyer_name_search != '')
+        {
+            $checkValidation = true;
+            $bookingList->where('buyer_name','like','%'.$request->buyer_name_search.'%');
+        }
+        if($request->company_name_search != '')
+        {
+            $checkValidation = true;
+            $bookingList->where('Company_name','like','%'.$request->company_name_search.'%');
+        }
+        if($request->attention_search != '')
+        {
+            $checkValidation = true;
+            $bookingList->where('attention_invoice','like','%'.$request->attention_search.'%');
+        }
+        if($request->from_oder_date_search != '' && $request->to_oder_date_search != '')
+        {
+            $checkValidation = true;
+            if($request->from_oder_date_search == $request->to_oder_date_search)
+                $bookingList->whereDate('created_at', $request->from_oder_date_search);
+            else
+                $bookingList->whereBetween('created_at', [$request->from_oder_date_search, $request->to_oder_date_search]);
+        }
+//      if($request->from_shipment_date_search != '' && $request->to_shipment_date_search != '')
+//      {
+//          $checkValidation = true;
+//          if($request->from_shipment_date_search == $request->to_shipment_date_search)
+//              $bookingList->whereDate('created_at', $request->from_shipment_date_search);
+//          else
+//              $bookingList->whereBetween('created_at', [$request->from_shipment_date_search, $request->to_shipment_date_search]);
+//      }
 
-  	return $bookings;
-  }
+        if($checkValidation)
+        {
+            $bookings = $bookingList->get();
+            return $bookings;
+        }
+        else
+            return null;
+    }
 }

@@ -32,11 +32,11 @@
 	<script type="text/javascript" src="{{ asset("js/custom.js") }}"></script>
 	<script type="text/javascript" src="{{ asset("js/all_product_table.js") }}"></script>
 	<script type="text/javascript" src="{{ asset("js/journal.js") }}"></script>
-	<script type="text/javascript" src="{{ asset("js/production.js") }}"></script>
 	<script src="{{ asset("assets/scripts/json-2.4.js") }}"></script>
 	<script src="{{ asset("assets/scripts/multipleTable.js") }}"></script>
 	<script src="{{ asset("assets/scripts/task/buyer.js") }}"></script>
 	<script src="{{ asset("assets/scripts/task/taskTpye.js") }}"></script>
 	<script src="{{ asset("assets/scripts/jquery.easy-autocomplete.min.js") }}"></script>
+	<script type="text/javascript" src="{{ asset("js/production.js") }}"></script>
 </body>
 </html>
