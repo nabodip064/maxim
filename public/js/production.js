@@ -19,7 +19,7 @@ $("#booking_simple_search").click(function ()
     else
     {
         var results = ajaxFunc("/booking_list_by_booking_id/", "GET", "booking_id="+booking_id);
-        addRow(results.responseJSON);
+        addRow(results.responseJSON, 0);
     }
 });
 
@@ -30,7 +30,7 @@ $('#advance_search_form').submit(function (ev)
     var results = ajaxFunc("/booking_list_by_search/", "POST", data);
 
     if((results.responseJSON != '') && (results.responseJSON != null))
-        addRow(results.responseJSON);
+        addRow(results.responseJSON, 0);
     else {
         alert("No data  found");
     }
@@ -66,26 +66,74 @@ function resetAllInputs(searchFld, form)
     });
 }
 
-function addRow(results)
+function setPagination(results, position) {
+    // if(results.length > end)
+    // {
+    var pageNum = Math.ceil(results.length/15);
+    var previous = (position-1);
+    var next = (position+1);
+    if(position == 1)
+        previous = 1;
+    if(position == pageNum)
+        next = pageNum;
+    $('.pagination').append('<li data-page="'+ previous +'"><span>&laquo;<span class="sr-only">(current)</span></span></li>').show();
+    for (i = 1; i <= pageNum;)
+    {
+        $('.pagination').append('<li data-page="'+i+'">\<span>'+ i++ +'<span class="sr-only">(current)</span></span>\</li>').show();
+    }
+    $('.pagination').append('<li data-page="'+ next +'"><span>&raquo;<span class="sr-only">(current)</span></span></li>').show();
+    // $('.pagination').append('<li><a href="http://127.0.0.1:8000/view/challan/list?page=2" rel="next">&raquo;</a></li>').show();
+
+    $('.pagination li:nth-child('+ (position+1) +')').addClass('active');
+
+    if(position == 1)
+        $('.pagination li:first-child').addClass('disabled');
+    if(position == pageNum)
+        $('.pagination li:last-child').addClass('disabled');
+    // }
+}
+
+function addRow(results, start)
 {
+    $('.pagination').empty();
     $('#booking_list_tbody').empty();
     $("#booking_list_pagination").css('display','none');
 
     var sl = 1;
 
-    results.forEach(function(result)
+    var position = start+1;
+    start = start*15;
+
+    if(results.length <start+15)
+        end = results.length;
+    else
+        end = start+15;
+
+    var rows = $.map(results, function(value, index) {
+        return [value];
+    });
+
+    for (var i = start; i < end; i++)
     {
         $('#booking_list_tbody').append('<tr class="booking_list_table"><td>'+sl+
-            '</td><td>'+result.buyer_name+
-            '</td><td>'+result.Company_name+
-            '</td><td>'+result.attention_invoice+
-            '</td><td>'+result.booking_order_id+
-            '</td><td>'+result.created_at+
+            '</td><td>'+rows[i].buyer_name+
+            '</td><td>'+rows[i].Company_name+
+            '</td><td>'+rows[i].attention_invoice+
+            '</td><td>'+rows[i].booking_order_id+
+            '</td><td>'+rows[i].created_at+
             '</td><td>'+
-            '</td><td><form action="./view/" target="_blank"><input type="hidden" name="bid" value="'+ result.booking_order_id+
+            '</td><td><form action="./view/" target="_blank"><input type="hidden" name="bid" value="'+ rows[i].booking_order_id+
             '"><button class="btn btn-success">View</button></form></td></tr>');
         sl++;
-    });
+    }
+
+    setPagination(results, position);
+
+    $('.pagination li').on('click',(function () {
+
+        var begin = $(this).attr("data-page");
+        addRow(results, begin-1);
+    }));
 }
 
 // challan list Search option
@@ -111,7 +159,7 @@ $("#challan_simple_search").click(function ()
     else
     {
         var results = ajaxFunc("/challan_list_by_challan_id/", "GET", "challan_id="+challan_id);
-        addRowInChallanList(results.responseJSON);
+        addRowInChallanList(results.responseJSON, 0);
     }
 });
 
@@ -122,14 +170,15 @@ $('#challan_advance_search_form').submit(function (ev)
     var results = ajaxFunc("/challan_list_by_search/", "POST", data);
 
     if((results.responseJSON != '') && (results.responseJSON != null))
-        addRowInChallanList(results.responseJSON);
+        addRowInChallanList(results.responseJSON, 0);
     else {
         alert("No data  found");
     }
 });
 
-function addRowInChallanList(results)
+function addRowInChallanList(results, start)
 {
+    $('.pagination').empty();
     $('#challan_list_tbody').empty();
     $("#challan_list_pagination").css('display','none');
 
@@ -138,17 +187,38 @@ function addRowInChallanList(results)
 
     var sl = 1;
 
-    results.forEach(function(result)
+    var position = start+1;
+    start = start*15;
+
+    if(results.length <start+15)
+        end = results.length;
+    else
+        end = start+15;
+
+    var rows = $.map(results, function(value, index) {
+        return [value];
+    });
+
+    for (var i = start; i < end; i++)
     {
         $('#challan_list_tbody').append('<tr class="challan_list_table"><td>'+sl+
-            '</td><td>'+result.checking_id+
-            '</td><td>'+result.challan_id+
-            '</td><td>'+result.created_at+
-            '</td><td><form action='+setUrl+' target="_blank"><input type="hidden" name="cid" value="'+ result.checking_id+
-            '"><input type="hidden" name="bid" value="'+ result.challan_id+
-            '"><button class="btn btn-success">View</button></form></td></tr>');
-        sl++;
-    });
+                '</td><td>'+rows[i].checking_id+
+                '</td><td>'+rows[i].challan_id+
+                '</td><td>'+rows[i].created_at+
+                '</td><td><form action='+setUrl+' target="_blank"><input type="hidden" name="cid" value="'+ rows[i].checking_id+
+                '"><input type="hidden" name="bid" value="'+ rows[i].challan_id+
+                '"><button class="btn btn-success">View</button></form></td></tr>');
+            sl++;
+    }
+
+    setPagination(results, position);
+
+    $('.pagination li').on('click',(function () {
+
+        var begin = $(this).attr("data-page");
+        addRowInChallanList(results, begin-1);
+
+    }));
 }
 
 $('#challan_reset_btn').click(function () {
@@ -178,7 +248,7 @@ $("#mrf_simple_search").click(function ()
     else
     {
         var results = ajaxFunc("/mrf_list_by_mrf_id/", "GET", "mrf_id="+mrf_id);
-        addRowInMrfanList(results.responseJSON);
+        addRowInMrfanList(results.responseJSON, 0);
     }
 });
 
@@ -189,40 +259,58 @@ $('#mrf_advance_search_form').submit(function (ev)
     var results = ajaxFunc("/mrf_list_by_search/", "POST", data);
 
     if((results.responseJSON != '') && (results.responseJSON != null))
-        addRowInMrfanList(results.responseJSON);
+        addRowInMrfanList(results.responseJSON, 0);
     else {
         alert("No data  found");
     }
 });
 
-function addRowInMrfanList(results)
+function addRowInMrfanList(results, start)
 {
+    $('.pagination').empty();
     $('#mrf_list_tbody').empty();
+    $('.mrf_list_table').remove();
     $("#mrf_list_pagination").css('display','none');
 
     var getUrl = document.URL;
     var setUrl = getUrl.replace("mrf/list/list","task/mrf/task/list")
     var sl = 1;
 
-    var start = 0;
-    var end = 10;
+    var position = start+1;
+    start = start*15;
 
-    // alert(results.length);
+    if(results.length <start+15)
+        end = results.length;
+    else
+        end = start+15;
 
-    results.forEach(function(result)
+    var rows = $.map(results, function(value, index) {
+        return [value];
+    });
+
+    for (var i = start; i < end; i++)
     {
-        alert(typeof(result));
-        console.log(result);
         $('#mrf_list_tbody').append('<tr class="mrf_list_table"><td>'+sl+
-            '</td><td>'+result.booking_order_id+
-            '</td><td>'+result.mrf_id+
-            '</td><td>'+result.created_at+
-            '</td><td>'+result.shipmentDate+
-            '</td><td><form action='+setUrl+' target="_blank"><input type="hidden" name="mid" value="'+ result.mrf_id+
-            '"><input type="hidden" name="bid" value="'+ result.booking_order_id+
+            '</td><td>'+rows[i].booking_order_id+
+            '</td><td>'+rows[i].mrf_id+
+            '</td><td>'+rows[i].created_at+
+            '</td><td>'+rows[i].shipmentDate+
+            '</td><td><form action='+setUrl+' target="_blank"><input type="hidden" name="mid" value="'+ rows[i].mrf_id+
+            '"><input type="hidden" name="bid" value="'+ rows[i].booking_order_id+
             '"><button class="btn btn-success">View</button></form></td></tr>');
         sl++;
-    });
+    }
+
+    setPagination(results, position);
+
+    $('.pagination li').on('click',(function () {
+
+        // $('.pagination li').removeClass('active');
+        // $(this).addClass('active');
+        var begin = $(this).attr("data-page");
+        addRowInMrfanList(results, begin-1);
+
+    }));
 }
 
 $('#mrf_reset_btn').click(function () {

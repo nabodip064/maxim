@@ -107,6 +107,11 @@
 			</table>
 
 			<div id="booking_list_pagination">{{$bookingList->links()}}</div>
+			<div class="pagination-container">
+				<nav>
+					<ul class="pagination"></ul>
+				</nav>
+			</div>
 		</div>
 	</div>
 @endsection

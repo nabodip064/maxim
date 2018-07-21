@@ -67,7 +67,12 @@
 				@endforeach
 				</tbody>
 			</table>
-			<div id="challan_list_pagination">{{$challanDetails->links()}}</div>
+			<div id="challan_list_pagination">{{$challanDetails->links()}}
+			</div><div class="pagination-container">
+				<nav>
+					<ul class="pagination"></ul>
+				</nav>
+			</div>
 		</div>
 	</div>
 @endsection
