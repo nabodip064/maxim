@@ -55,15 +55,18 @@
                                 <div class="col-md-6">
                                     <select name="taskType" class="form-control" id="taskType">
                                         <option value="">Select Task Type</option>
-                                        <option value="booking">Booking</option>
-                                        <option value="PI">PI</option>
-                                        <option value="IPO">IPO</option>
-                                        <option value="MRF">MRF</option>
-                                        <option value="challan">Challan</option>
+                                        <?php 
+                                            if(isset($taskAccessList) && !empty($taskAccessList)){
+                                                foreach ($taskAccessList as $taskkey) {
+                                                    print '<option value="'.$taskkey.'">'.ucwords($taskkey).'</option>';
+                                                }
+                                            }
+                                        ?>
                                     </select>
                                 </div>                        
                             </div>
-
+                            <?php if(isset($taskAccessList) && !empty($taskAccessList)){ ?>
+                            
                             <div class="form-group buyerChange">
                                 <label class="col-md-4 control-label">
                                     <span class="pull-right">Buyer Name</span>
@@ -86,7 +89,7 @@
                                     </select>
                                 </div>                        
                             </div>
-
+                            
                             <div class=" buyer_company form-group hidden">
                                 <label class="col-md-4 control-label">
                                     <span class="pull-right">Company Name</span>
@@ -129,7 +132,7 @@
                                     <input type="text" name="ipoIncrease" class="form-control" disabled="true" id="ipoIncrease" placeholder="Increase Value Percentage">
                                 </div>
                             </div>
-
+                            <?php } ?>
                             <div class="form-group">
                                 <div class="col-md-4"></div>
                                 <div class="col-md-4">
@@ -144,6 +147,7 @@
             </div>
         </div>
     </div>
+<?php if(isset($taskAccessList) && !empty($taskAccessList)){ ?>
 <div class="row hidden" id="show_preloder">
     <div class="col-md-12 col-xs-12 col-sm-12">
         <div class="top-div">                    
@@ -211,7 +215,7 @@
                 </div>
     </div>
 </div>
-
+<?php } ?>
 
 
 <div class="pre-loader">
