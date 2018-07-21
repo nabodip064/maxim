@@ -9,6 +9,8 @@ use App\MaxParty;
 use App\MxpProduct;
 use App\MxpBrand;
 use App\MxpProductsColors;
+use App\MxpSupplierPrice;
+use App\Supplier;
 use App\VendorPrice;
 use Auth;
 use Illuminate\Http\Request;
@@ -17,6 +19,7 @@ use App\Model\MxpGmtsColor;
 use App\MxpProductSize;
 use App\MxpProductsSizes;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Supplier\SupplierController;
 
 class ProductController extends Controller
 {
@@ -69,8 +72,11 @@ class ProductController extends Controller
 
         $vendorCompanyList = MaxParty::select('id', 'name', 'name_buyer')->get()->sortBy('name_buyer');
 
+        $supplierList = Supplier::where('status', 1)
+                        ->where('is_delete', 0)
+                        ->get();
 
-       return view('product_management.add_product',compact('brands', 'colors', 'sizes', 'vendorCompanyList'));
+       return view('product_management.add_product',compact('brands', 'colors', 'sizes', 'vendorCompanyList', 'supplierList'));
     }
 
     Public function updateProductView(Request $request){
@@ -96,13 +102,42 @@ class ProductController extends Controller
             foreach ($size->sizes as $data){
                 array_push($sizesJs, $data->size_id.','.$data->product_size);
             }
-       }
+        }
 
-        $vendorCompanyList = MaxParty::select('id', 'name', 'name_buyer')->get()->sortBy('name_buyer');
+
+
+
+
         $vendorCompanyListPrice = VendorPrice::with('party')->where('product_id', $request->product_id)->get();
+        $supplierPrices = MxpSupplierPrice::with('supplier')->where('product_id', $request->product_id)->get();
+
+        $vendorCompanyList = MaxParty::select('mxp_party.id', 'mxp_party.name', 'mxp_party.name_buyer')
+                            ->leftJoin('mxp_vendor_prices', 'mxp_vendor_prices.party_table_id', '=', 'mxp_party.id')
+                            ->where('mxp_party.status', '=', 1)
+                            ->where('mxp_vendor_prices.party_table_id', null)
+                            ->get();
+//        return count($vendorCompanyList);
+
+        if(count($vendorCompanyListPrice)==0){
+            $vendorCompanyList = MaxParty::select('id', 'name', 'name_buyer')->get()->sortBy('name_buyer');
+        }
+
 //        return $vendorCompanyList;
 
-       return view('product_management.update_product', compact('product', 'vendorCompanyListPrice', 'vendorCompanyList',  'colors', 'sizes', 'colorsJs', 'sizesJs'))->with('brands',$brands);
+
+
+        $supplierList = Supplier::select('suppliers.supplier_id', 'suppliers.name', 'suppliers.phone', 'suppliers.address', 'suppliers.status')
+                        ->leftJoin('mxp_supplier_prices', 'mxp_supplier_prices.supplier_id', '=', 'suppliers.supplier_id')
+                        ->where('suppliers.status', '=', 1)
+                        ->where('suppliers.is_delete', '=', 0)
+                        ->where('mxp_supplier_prices.supplier_id', null)
+                        ->get();
+        if(count($supplierPrices) == 0){
+            $supplierList = Supplier::get()->sortBy('name');
+        }
+
+
+       return view('product_management.update_product', compact('product', 'vendorCompanyListPrice', 'supplierPrices', 'supplierList', 'vendorCompanyList',  'colors', 'sizes', 'colorsJs', 'sizesJs'))->with('brands',$brands);
     }
 
     Public function addProduct(Request $request){
@@ -162,6 +197,9 @@ class ProductController extends Controller
 
         $this->addVendorPrice($request, $lastProId);
 
+        SupplierController::saveSupplierProductPrice($request, $lastProId);
+
+
        for ($i=0; $i<count($request->colors); $i++){
 
            $colorData = explode(',', $request->colors[$i]);
@@ -196,8 +234,11 @@ class ProductController extends Controller
     public function updateProduct(Request $request){
 
 
-        VendorPrice::where('product_id', $request->product_id)->delete();
+//        VendorPrice::where('product_id', $request->product_id)->delete();
         $this->addVendorPrice($request, $request->product_id);
+
+        SupplierController::updateProductPrice($request);
+
 
     	$roleManage = new RoleManagement();
 
@@ -213,7 +254,8 @@ class ProductController extends Controller
             'p_brand' => 'required'
 		   ],
            $validMessages
-    );
+        );
+
 		if ($validator->fails()) {
 			return redirect()->back()->withInput($request->input())->withErrors($validator->messages());
 		}
@@ -315,17 +357,23 @@ class ProductController extends Controller
         return 0;
     }
 
-    public function addVendorPrice(Request $req, $productId){
+    public function addVendorPrice(Request $request, $productId){
 
-        for($i=0; $i<count($req->party_table_id); $i++){
+        for($i=0; $i<count($request->party_table_id); $i++){
 
-            $storePrice = new VendorPrice();
-            $storePrice->party_table_id = $req->party_table_id[$i];
-            $storePrice->product_id = $productId;
-            $storePrice->vendor_com_price = $req->v_com_price[$i];
-            $storePrice->save();
+            if(count(VendorPrice::find($request->price_id[$i])) > 0){
+                $sPrice = VendorPrice::find($request->price_id[$i]);
+            }else{
+                $sPrice = new VendorPrice();
+            }
+
+            $sPrice->party_table_id = $request->party_table_id[$i];
+            $sPrice->product_id = $productId;
+            $sPrice->vendor_com_price = $request->v_com_price[$i];
+            $sPrice->save();
 
         }
+
 
         return true;
     }
