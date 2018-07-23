@@ -81,6 +81,7 @@
 					<th>booking id</th>
 					<th>Order Date</th>
 					<th>Shipment Date</th>
+					<th>Status</th>
 					<th>Action</th>
 					</thead>
 				</tr>
@@ -95,7 +96,10 @@
 						<td>{{$value->booking_order_id}}</td>
 						<td>{{Carbon\Carbon::parse($value->created_at)}}</td>
 						<td></td>
+						<td></td>
 						<td>
+							<a href="{{ Route('booking_list_create_ipo', $value->booking_order_id) }}" class="btn btn-info">IPO</a>
+							<a href="{{ Route('booking_list_create_mrf', $value->booking_order_id) }}" class="btn btn-warning">MRF</a>
 							<form action="{{ Route('booking_list_action_task') }}" target="_blank">
 								<input type="hidden" name="bid" value="{{$value->booking_order_id}}">
 								<button class="btn btn-success">View</button>
@@ -115,5 +119,3 @@
 		</div>
 	</div>
 @endsection
-
-
