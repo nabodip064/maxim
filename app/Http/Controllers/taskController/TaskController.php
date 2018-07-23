@@ -45,6 +45,11 @@ class TaskController extends Controller
      	$roleManage = new RoleManagement();
      	$datas = $request->all();
 
+     	$bookingIds = explode(",",$request->bookingIdList);
+
+//     	$this->print_me($request->bookingIdList);
+     	$this->print_me($bookingIds);
+
      	$taskType = isset($request->taskType) ? $request->taskType : '';
      	if($taskType === 'booking'){
          	$taskType = "Create Booking";
