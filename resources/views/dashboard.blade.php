@@ -37,6 +37,7 @@
 
                     <form class="form-horizontal inputForm" role="form" method="POST" action="{{ Route('task_action') }}">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="bookingIdList" id="hiddenBookingIdList">
 
                             @if ($errors->any())
                                 <div class="alert alert-danger">
@@ -121,6 +122,8 @@
                                 </label>
                                 <div class="col-md-6">
                                     <input type="text" name="bookingId" class="form-control" disabled="true" id="bookingId" placeholder="Booking Id">
+                                    {{--<input type="hidden" class="form-control" id="hiddenBookingIdList" >--}}
+                                    <div id="bookingIdList"></div>
                                 </div>
                             </div>
 
