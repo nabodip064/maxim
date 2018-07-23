@@ -88,4 +88,12 @@ class BookingListController extends Controller
         else
             return null;
     }
+
+    public function createIpoView(Request $request){
+        return 'createIpoView and booking id is '.$request->booking_id;
+    }
+
+    public function createMrfView(Request $request){
+        return 'createMrfView and booking id is '.$request->booking_id;
+    }
 }
