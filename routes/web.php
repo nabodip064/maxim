@@ -937,3 +937,21 @@ Route::group(['middleware' => 'auth'], function () {
 
     });
 });
+
+Route::group(['middleware' => 'auth'], function () {
+
+    Route::group(['middleware' => 'routeAccess'], function () {
+
+        Route::get('booking/list/createIpo/{booking_id?}',
+            [
+                'as'=>'booking_list_create_ipo',
+                'uses'=>'taskController\BookingListController@createIpoView'
+            ]);
+
+        Route::get('booking/list/createMrf/{booking_id?}',
+            [
+                'as'=>'booking_list_create_mrf',
+                'uses'=>'taskController\BookingListController@createMrfView'
+            ]);
+    });
+});
