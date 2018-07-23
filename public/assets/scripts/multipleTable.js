@@ -304,6 +304,19 @@ $(document).ready(function(){
         match: {
             enabled: true
         },
+        onChooseEvent: function(t){
+            // $('#bookingIdList').val($('#bookingIdList').val() +' , '+ t.val());
+            $('#bookingIdList').append('<div class="challan_item"><span>'+t.val()+'</span><span class="challan_list_rmv"> x</span></div>');
+            $('#hiddenBookingIdList').val($('#hiddenBookingIdList').val() +' , '+ t.val());
+            // $('.selections').append($('<option>', {
+            //     value: t.val(),
+            //     text: t.val()
+            // })).trigger('change');
+            // $('.selections').select2('data', {id: t.val(), a_key: t.val()}).trigger('change');
+            // $('.selections').select2();
+            // $(".selections").select2();
+            console.log(t.val());
+        }
     },
 
     ajaxSettings: {
@@ -319,5 +332,12 @@ $(document).ready(function(){
 
   $("#item_codemxp").easyAutocomplete(itemoptions);
   $("#bookingId").easyAutocomplete(bookingoptions);
-
+    $("#bookingIdList").on("click",".challan_list_rmv", function(){
+        var order_item = $(this).parent(".challan_item").text();
+        $(this).parent(".challan_item").remove();
+        // alert(order_item);
+        var order_items = $('#hiddenBookingIdList').val();
+        var order_items =  order_items.replace(' , '+order_item, "W3Schools");
+    })
 });
+
