@@ -855,6 +855,7 @@ $('#close_lc_purchase_update_modal').click(function(ev) {
     $('#myModal').modal("hide");
 })
 
+
 // $('#update_lc_product_btn').click(function(ev) {
 //     ev.preventDefault();
 //     $('#myModal').css("display", "none");

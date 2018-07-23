@@ -243,6 +243,7 @@ class MrfController extends Controller
             $insertMrfValue = new MxpMrf();
             $insertMrfValue->user_id = Auth::user()->user_id;
             $insertMrfValue->mrf_id = $mrf_id;
+            $insertMrfValue->supplier_id= $request->supplier_id;
             $insertMrfValue->booking_order_id = $bookingChallanValue->booking_order_id;
             $insertMrfValue->mrf_person_name = $request->mrf_person_name;
             $insertMrfValue->erp_code = $bookingChallanValue->erp_code;

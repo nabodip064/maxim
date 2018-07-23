@@ -147,6 +147,7 @@ class ProductController extends Controller
 
         $validMessages = [
             'p_code.required' => 'Item Code field is required.',
+            'product_type.required' => 'Product Type is required.',
             'p_code.unique' => 'Item Code has been entered before.',
             'p_erp_code.required' => 'ERP Code field is required.',
             'p_unit_price.required' => 'Unit Price field is required.',
@@ -179,6 +180,7 @@ class ProductController extends Controller
     	$createProduct = new MxpProduct();
     	$createProduct->product_code = $request->p_code;
     	$createProduct->product_name = $request->p_name;
+        $createProduct->product_type = $request->product_type;
     	$createProduct->product_description = $request->p_description;
     	$createProduct->brand = $request->p_brand;
     	$createProduct->erp_code = $request->p_erp_code;
@@ -265,6 +267,7 @@ class ProductController extends Controller
     	$updateProduct = MxpProduct::find($request->product_id);
     	$updateProduct->product_code = $request->p_code;
     	$updateProduct->product_name = $request->p_name;
+        $updateProduct->product_type = $request->product_type;
     	$updateProduct->product_description = $request->p_description;
     	$updateProduct->brand = $request->p_brand;
     	$updateProduct->erp_code = $request->p_erp_code;

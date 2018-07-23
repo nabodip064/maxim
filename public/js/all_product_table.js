@@ -305,29 +305,25 @@ $('.add-size-brand').on('click', function(){
 
 
 
-$('.vendor-price-btn').on('click', function(e){
+// $('.vendor-price-btn').on('click', function(e){
+//
+// 	e.preventDefault();
+//     $("#addVendorComPrice").modal('toggle');
+//
+// });
 
-	e.preventDefault();
-    // var inputValue = $('form.vendor-price').serialize();
-    //
-    //
-    // $.ajax({
-    //     type: "POST",
-    //     url: "/add/vendor/price",
-    //     data: inputValue,
-    //     datatype: 'json',
-    //     cache: false,
-    //     async: false,
-    //     success: function(result) {
-    //         console.log(result);
-    //
-    //
-    //     },
-    //     error: function(data) {
-    //         result('vendor Price Error: '+ data);
-    //     },
-    //
-    // });
-    $("#addVendorComPrice").modal('toggle');
-
+$('.close').click(function(e) {
+    $('#addVendorComPrice').modal("hide");
+    $('#addSupplierPrice').modal("hide");
 });
+
+$('.vendor-price-btn').click(function(e) {
+    e.preventDefault();
+    $('#addVendorComPrice').modal("hide");
+});
+$('.supplier-price-btn').click(function(e) {
+
+    e.preventDefault();
+    $('#addSupplierPrice').modal("hide");
+});
+
