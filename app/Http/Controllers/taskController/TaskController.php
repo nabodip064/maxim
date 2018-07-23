@@ -6,6 +6,7 @@ use App\Http\Controllers\dataget\ListGetController;
 use App\Http\Controllers\Message\StatusMessage;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\RoleManagement;
+use App\Supplier;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\MxpIpo;
@@ -139,6 +140,11 @@ class TaskController extends Controller
 
          }elseif($taskType === 'MRF'){
             $data = $request->all();
+
+            $suppliers = Supplier::where('status', 1)
+                                 ->where('is_delete', 0)
+                                 ->get();
+
             $booking_order_id = $request->bookingId;
             $validMessages = [
                     'bookingId.required' => 'Booking Id field is required.'
@@ -169,7 +175,7 @@ class TaskController extends Controller
 
             $MrfDetails = DB::select("select * from mxp_MRF_table where booking_order_id = '".$request->bookingId."' GROUP BY mrf_id");
 
-            return view('maxim.mrf.mrf',compact('bookingDetails','MrfDetails','booking_order_id'));
+            return view('maxim.mrf.mrf',compact('bookingDetails','MrfDetails','booking_order_id', 'suppliers'));
 
          }elseif($taskType === 'challan'){
 

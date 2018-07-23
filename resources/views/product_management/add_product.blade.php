@@ -192,8 +192,20 @@ trans('others.add_product_label'))
 		                                </div>
 		                            </div>
 
+									<div class="form-group">
+										<label class="col-md-4 control-label">{{ trans('others.product_type_label') }}</label>
+										<div class="col-sm-6">
+											<div class="select">
+												<select class="form-control" type="select" name="product_type" >
+													<option  value="MRF" >MRF</option>
+													<option value="IPO" >IPO</option>
+												</select>
+											</div>
+										</div>
+									</div>
+
 		                            <div class="form-group">
-		                            	<label class="col-md-4 control-label"></label>
+		                            	<label class="col-md-4 control-label">{{ trans('others.add_product_status') }}</label>
 		                                <div class="col-sm-6">
 		                                    <div class="select">
 		                                        <select class="form-control" type="select" name="is_active" >
@@ -322,7 +334,7 @@ trans('others.add_product_label'))
 
 													<div class="form-group">
 														<div class="col-md-2 col-md-offset-10">
-															<button class="btn btn-primary vendor-price-btn" style="margin-right: 15px;">
+															<button class="btn btn-primary supplier-price-btn" style="margin-right: 15px;">
 																{{trans('others.save_button')}}
 															</button>
 														</div>

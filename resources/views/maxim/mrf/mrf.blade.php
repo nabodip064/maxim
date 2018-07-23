@@ -102,9 +102,14 @@
 
 									<div class="col-sm-6">
 										<div class="form-group">
-											<label class="col-sm-12 label-control">MRF Person Name</label>
+											<label class="col-sm-12 label-control">Supplier</label>
 											<div class="col-sm-12">
-												<input class="form-control" type="text" name="mrf_person_name" placeholder="Enter Name" required>
+												{{--<input class="form-control" type="text" name="mrf_person_name" placeholder="Enter Name" required>--}}
+												<select class="form-control" name="supplier_id">
+													@foreach($suppliers as $supplier)
+														<option value="{{$supplier->supplier_id}}">{{$supplier->name}}</option>
+													@endforeach
+												</select>
 											</div>
 										</div>
 									</div>
