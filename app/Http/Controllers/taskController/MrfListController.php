@@ -37,6 +37,7 @@ class MrfListController extends Controller
 
         $mrfList = DB::table('mxp_mrf_table')
             ->where('mrf_id', 'like', '%'.$request->mrf_id.'%')
+            ->groupBy('mrf_id')
             ->orderBy('id','DESC')
             ->get();
 
@@ -59,7 +60,7 @@ class MrfListController extends Controller
             if($request->from_create_date_search == $request->to_create_date_search)
                 $mrfList->whereDate('created_at', $request->from_create_date_search);
             else
-                $mrfList->whereBetween('created_at', [$request->from_create_date_search, $request->to_create_date_search]);
+                $mrfList->whereDate('created_at','>=',$request->from_create_date_search)->whereDate('created_at','<=',$request->to_create_date_search);
         }
         if($request->from_shipment_date_search != '' && $request->to_shipment_date_search != '')
         {
@@ -67,12 +68,12 @@ class MrfListController extends Controller
             if($request->from_shipment_date_search == $request->to_shipment_date_search)
                 $mrfList->whereDate('shipmentDate', $request->from_shipment_date_search);
             else
-                $mrfList->whereBetween('shipmentDate', [$request->from_shipment_date_search, $request->to_shipment_date_search]);
+                $mrfList->whereDate('shipmentDate','>=',$request->from_shipment_date_search)->whereDate('shipmentDate','<=',$request->to_shipment_date_search);
         }
 
         if($checkValidation)
         {
-            $mrfs = $mrfList->get();
+            $mrfs = $mrfList->groupBy('mrf_id')->orderBy('id','DESC')->get();
             return $mrfs;
         }
         else
