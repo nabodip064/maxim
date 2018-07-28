@@ -1,7 +1,7 @@
 @extends('maxim.layouts.layouts')
 @section('title','Booking Maxim')
 @section('print-body')
-<?php 
+<?php
 	$getBuyerName = '';
 
 	foreach($bookingReport as $details){
@@ -62,8 +62,8 @@
 				@endforeach
 			</ul>
 		</div>
-		
-		<div class="col-md-4 col-sm-4 col-xs-5">			
+
+		<div class="col-md-4 col-sm-4 col-xs-5">
 		</div>
 	</div>
 
@@ -92,15 +92,15 @@
 					@endfor
 					@endforeach
 		</div>
-		
-		<div class="col-md-4 col-sm-4 col-xs-5">			
+
+		<div class="col-md-4 col-sm-4 col-xs-5">
 		</div>
 	</div>
 
     @foreach ($bookingReport as $details)
 		<table class="table table-bordered">
 	        <?php
-	        	
+
 	        	$gmtsColor = [];
 	        	$gmtsItemSize = [];
 	        	$gmtsquantity = '';
@@ -113,12 +113,12 @@
 	        	}
 	        	$count = count($gmtsColor) - 1;
 	        	$gmtscolorAllValues = array();
-	        	for ($i=0; $i <= $count ; $i++) { 
+	        	for ($i=0; $i <= $count ; $i++) {
 	        		$gmtscolorAllValues[$i][] =$gmtsColor[$i];
 	        		$gmtscolorAllValues[$i][] =$gmtsItemQtyValue[$i];
 	        	}
 
-	        	
+
 	        	$itemsize = explode(',', $details->itemSize);
 	        	$qty = explode(',', $details->quantity);
 	        	$itemQtyValue = array_combine($itemsize, $qty);
@@ -158,17 +158,17 @@
 		        	@php($s = 0)
 		        		@for($s;$s<=0;$s++)
 		        			@if(
-		        			'S' === array_search('S',$itemName) || 
+		        			'S' === array_search('S',$itemName) ||
 		        			's' === array_search('s',$itemName) ||
-		        			'M' === array_search('M',$itemName) || 
+		        			'M' === array_search('M',$itemName) ||
 		        			'm' === array_search('m',$itemName) ||
-		        			'xl' === array_search('xl',$itemName) || 
+		        			'xl' === array_search('xl',$itemName) ||
 		        			'XL' === array_search('XL',$itemName) ||
-		        			'xxl' === array_search('xxl',$itemName) || 
+		        			'xxl' === array_search('xxl',$itemName) ||
 		        			'XXL' === array_search('XXL',$itemName) ||
-		        			'4xl' === array_search('4xl',$itemName) || 
+		        			'4xl' === array_search('4xl',$itemName) ||
 		        			'4XL' === array_search('4XL',$itemName) ||
-		        			'5xl' === array_search('5xl',$itemName) || 
+		        			'5xl' === array_search('5xl',$itemName) ||
 		        			'5XL' === array_search('5XL',$itemName)
 		        			)
 		        				@foreach ($itemQtyValue as $keys =>$itemFormat)
@@ -186,7 +186,7 @@
 		        			@else
 		        				<th>Something Wrong</th>
 		        			@endif
-		        		@endfor    		  
+		        		@endfor
 
 		        	<th width="21%">ORDER QTY</th>
 
@@ -204,17 +204,17 @@
 
 		    	@if(!empty($details->gmtsColor))
 		    		@if(
-		    			'S' === array_search('S',$itemName) || 
+		    			'S' === array_search('S',$itemName) ||
 				        's' === array_search('s',$itemName) ||
-		    			'M' === array_search('M',$itemName) || 
+		    			'M' === array_search('M',$itemName) ||
 		    			'm' === array_search('m',$itemName) ||
-		    			'xl' === array_search('xl',$itemName) || 
+		    			'xl' === array_search('xl',$itemName) ||
 		    			'XL' === array_search('XL',$itemName) ||
-		    			'xxl' === array_search('xxl',$itemName) || 
+		    			'xxl' === array_search('xxl',$itemName) ||
 		    			'XXL' === array_search('XXL',$itemName) ||
-		    			'4xl' === array_search('4xl',$itemName) || 
+		    			'4xl' === array_search('4xl',$itemName) ||
 		    			'4XL' === array_search('4XL',$itemName) ||
-		    			'5xl' === array_search('5xl',$itemName) || 
+		    			'5xl' === array_search('5xl',$itemName) ||
 		    			'5XL' === array_search('5XL',$itemName)
 		    		)
 			    		<td class="colspan-td" colspan="{{$colspanValue}}">
@@ -225,17 +225,17 @@
 					    			@endforeach
 
 				    					@if(
-							    			'S' === array_search('S',$gmtscolorAllValuesKeys) || 
+							    			'S' === array_search('S',$gmtscolorAllValuesKeys) ||
 									        's' === array_search('s',$gmtscolorAllValuesKeys) ||
-							    			'M' === array_search('M',$gmtscolorAllValuesKeys) || 
+							    			'M' === array_search('M',$gmtscolorAllValuesKeys) ||
 							    			'm' === array_search('m',$gmtscolorAllValuesKeys) ||
-							    			'xl' === array_search('xl',$gmtscolorAllValuesKeys) || 
+							    			'xl' === array_search('xl',$gmtscolorAllValuesKeys) ||
 							    			'XL' === array_search('XL',$gmtscolorAllValuesKeys) ||
-							    			'xxl' === array_search('xxl',$gmtscolorAllValuesKeys) || 
+							    			'xxl' === array_search('xxl',$gmtscolorAllValuesKeys) ||
 							    			'XXL' === array_search('XXL',$gmtscolorAllValuesKeys) ||
-							    			'4xl' === array_search('4xl',$gmtscolorAllValuesKeys) || 
+							    			'4xl' === array_search('4xl',$gmtscolorAllValuesKeys) ||
 							    			'4XL' === array_search('4XL',$gmtscolorAllValuesKeys) ||
-							    			'5xl' === array_search('5xl',$gmtscolorAllValuesKeys) || 
+							    			'5xl' === array_search('5xl',$gmtscolorAllValuesKeys) ||
 							    			'5XL' === array_search('5XL',$gmtscolorAllValuesKeys)
 							    		)
 					    					<tr>
@@ -245,7 +245,7 @@
 
 							    				@if(!empty($values[1]))
 							    					@foreach ($values[1] as $keyss => $values)
-							    					<?php 
+							    					<?php
 							    						$totalQnty = $totalQnty + $values;
 							    					?>
 							    						<td>{{$values}}</td>
@@ -262,24 +262,24 @@
 		    		@else
 				    	<td class="colspan-td" colspan="3">
 			    			<table>
-			    				<tbody>		    					
+			    				<tbody>
 			    					@foreach ($gmtscolorAllValues as $keys => $values)
 			    						@foreach ($values[1] as $keys => $aaa)
 				    					<?php $gmtscolorAllValuesKeys = [];$gmtscolorAllValuesKeys[$keys] = $keys; ?>
 						    			@endforeach
-						    			
+
 					    					@if(
-								    			'S' === array_search('S',$gmtscolorAllValuesKeys) || 
+								    			'S' === array_search('S',$gmtscolorAllValuesKeys) ||
 										        's' === array_search('s',$gmtscolorAllValuesKeys) ||
-								    			'M' === array_search('M',$gmtscolorAllValuesKeys) || 
+								    			'M' === array_search('M',$gmtscolorAllValuesKeys) ||
 								    			'm' === array_search('m',$gmtscolorAllValuesKeys) ||
-								    			'xl' === array_search('xl',$gmtscolorAllValuesKeys) || 
+								    			'xl' === array_search('xl',$gmtscolorAllValuesKeys) ||
 								    			'XL' === array_search('XL',$gmtscolorAllValuesKeys) ||
-								    			'xxl' === array_search('xxl',$gmtscolorAllValuesKeys) || 
+								    			'xxl' === array_search('xxl',$gmtscolorAllValuesKeys) ||
 								    			'XXL' === array_search('XXL',$gmtscolorAllValuesKeys) ||
-								    			'4xl' === array_search('4xl',$gmtscolorAllValuesKeys) || 
+								    			'4xl' === array_search('4xl',$gmtscolorAllValuesKeys) ||
 								    			'4XL' === array_search('4XL',$gmtscolorAllValuesKeys) ||
-								    			'5xl' === array_search('5xl',$gmtscolorAllValuesKeys) || 
+								    			'5xl' === array_search('5xl',$gmtscolorAllValuesKeys) ||
 								    			'5XL' === array_search('5XL',$gmtscolorAllValuesKeys)
 								    		)
 								    		@else
@@ -295,7 +295,7 @@
 								    					 			<td width="42.5%">{{$qty}}</td>
 								    					 		</tr>
 								    					 	</table>
-								    					</div>	
+								    					</div>
 							    					 	@endforeach
 							    					</td>
 							    					@endif
@@ -303,25 +303,25 @@
 						    				@endif
 			    					@endforeach
 			    				</tbody>
-			    			</table>		    		
-			    		</td>		    		
+			    			</table>
+			    		</td>
 		        	@endif
 		        @endif
-		        
+
 		        @if(
-		        'S' === array_search('S',$itemName) || 
+		        'S' === array_search('S',$itemName) ||
 		        's' === array_search('s',$itemName) ||
-    			'M' === array_search('M',$itemName) || 
+    			'M' === array_search('M',$itemName) ||
     			'm' === array_search('m',$itemName) ||
-    			'xl' === array_search('xl',$itemName) || 
+    			'xl' === array_search('xl',$itemName) ||
     			'XL' === array_search('XL',$itemName) ||
-    			'xxl' === array_search('xxl',$itemName) || 
+    			'xxl' === array_search('xxl',$itemName) ||
     			'XXL' === array_search('XXL',$itemName) ||
-    			'4xl' === array_search('4xl',$itemName) || 
+    			'4xl' === array_search('4xl',$itemName) ||
     			'4XL' === array_search('4XL',$itemName) ||
-    			'5xl' === array_search('5xl',$itemName) || 
+    			'5xl' === array_search('5xl',$itemName) ||
     			'5XL' === array_search('5XL',$itemName)
-    			)			   				
+    			)
 
 		        @elseif (empty($details->others_color))
 		        	<td class="colspan-td" colspan="2">
@@ -336,7 +336,7 @@
 		        	</td>
     			@else
     			@endif
-    			
+
 		        <td>PCS</td>
 		    </tbody>
 
