@@ -804,6 +804,11 @@ Route::group(['middleware' => 'auth'], function () {
             'as'=>'get_product_details',
             'uses'=>'taskController\BookingController@orderInputDetails'
         ]);
+    Route::any('submited/get/product/details/vedorPrice',
+        [
+            'as'=>'get_product_details',
+            'uses'=>'taskController\BookingController@getVendorPrice'
+        ]);
     Route::any('/get/product/details',
         [
             'as'=>'get_product_details',
