@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use App\Model\MxpBookingBuyerDetails;
 use App\Model\MxpBookingChallan;
 use App\Model\MxpBooking;
+use App\VendorPrice;
+use App\MxpItemsQntyByBookingChallan;
 use Validator;
 use Auth;
 use DB;
@@ -19,12 +21,26 @@ class BookingController extends Controller
     public function orderInputDetails(Request $request){
 
       return json_encode(DB::select('Call getProductSizeQuantityWithConcat("'.$request->item.'")'));
-     }
+    }
+
+    public function getVendorPrice(Request $request){
+
+        $price  = VendorPrice::where('product_id',$request->productId)
+            ->where('party_table_id', $request->company_id)
+            ->orderBy('price_id', 'DESC')->first();
+
+        if (count($price) > 0)
+            return $price;
+        else
+            return new MxpBooking();
+
+
+    }
 
     public function getordercode()
     {
       $results = array();
-      $orderDetails = DB::select("SELECT `booking_order_id` FROM `mxp_booking` order by `id` DESC ");
+      $orderDetails = DB::select("SELECT `booking_order_id` FROM `mxp_booking` group by `booking_order_id` order by `id` DESC ");
       if(isset($orderDetails) && !empty($orderDetails)){
           foreach ($orderDetails as $orderKey => $orderValue) {
               
@@ -143,6 +159,23 @@ class BookingController extends Controller
         $insertBookingChallan->shipmentDate      = $bookingValues->shipmentDate;
         $insertBookingChallan->poCatNo           = $bookingValues->poCatNo;
         $insertBookingChallan->save();
+        $bookingChallanId = $insertBookingChallan->id;
+
+        $item_size = explode(',', $bookingValues->item_size);
+        $item_qnty = explode(',', $bookingValues->item_quantity);
+        $item_color = explode(',', $bookingValues->gmts_color);
+
+        for ($i = 0; $i < count($item_size); $i++){
+            $itemQntyByChalan = new MxpItemsQntyByBookingChallan();
+            $itemQntyByChalan->booking_challan_id = $bookingChallanId;
+            $itemQntyByChalan->booking_order_id = $insertBookingChallan->booking_order_id;
+            $itemQntyByChalan->item_code = $insertBookingChallan->item_code;
+            $itemQntyByChalan->erp_code = $insertBookingChallan->erp_code;
+            $itemQntyByChalan->item_size = $item_size[$i];
+            $itemQntyByChalan->item_quantity = $item_qnty[$i];
+            $itemQntyByChalan->gmts_color = $item_color[$i];
+            $itemQntyByChalan->save();
+        }
       }
 
       $companyInfo = DB::table('mxp_header')->where('header_type',11)->get();
