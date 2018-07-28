@@ -167,8 +167,8 @@ $(document).ready(function(){
                       text : ""
                   }));
 
-                  $('.'+item_parent_class+' .item_price').eq(incre).val('');                
-                  $('.'+item_parent_class+' .item_price').eq(0).val('');                
+                  $('.'+item_parent_class+' .item_price').eq(incre).val('');
+                  $('.'+item_parent_class+' .item_price').eq(0).val('');
                   $('.'+item_parent_class+' .item_qty').eq(0).val('');                
 
                 
@@ -239,7 +239,20 @@ $(document).ready(function(){
                 for(ij in myObj){
                   $('.'+item_parent_class+' .others_color').eq(increI).val(myObj[ij].others_color);
                   $('.'+item_parent_class+' .item_description').eq(increI).val(myObj[ij].product_description);
-                  $('.'+item_parent_class+' .item_price').eq(increI).val(myObj[ij].unit_price);
+
+                  var company_id = $("input[name=companyIdForBookingOrder]").val();
+                  var priceDetails = ajaxFunc("get/product/details/vedorPrice", "GET", {productId: myObj[ij].product_id, company_id: company_id});
+
+                  // console.log(myObj[ij]);
+                  if(priceDetails.responseJSON != ''){
+                      $('.'+item_parent_class+' .item_price').eq(increI).val(priceDetails.responseJSON.vendor_com_price);
+                      $('.'+item_parent_class+' .item_price').eq(increI).attr("readonly","true");
+                  }
+                  else{
+                      $('.'+item_parent_class+' .item_price').eq(increI).val(myObj[ij].unit_price);
+                      $('.'+item_parent_class+' .item_price').eq(increI).attr("readonly","true");
+                  }
+
                   increI++;
                 }
 
@@ -256,6 +269,21 @@ $(document).ready(function(){
       // });
   });
 });
+
+function getVendorPrice(){
+
+    $.ajax({
+        url:url,
+        type:type,
+        data:data,
+        success: function(result) {
+
+        },
+        error:function(result){
+            alert("Error");
+        }
+    });
+}
 
 
 $(document).ready(function(){
@@ -305,17 +333,15 @@ $(document).ready(function(){
             enabled: true
         },
         onChooseEvent: function(t){
-            // $('#bookingIdList').val($('#bookingIdList').val() +' , '+ t.val());
-            $('#bookingIdList').append('<div class="challan_item"><span>'+t.val()+'</span><span class="challan_list_rmv"> x</span></div>');
-            $('#hiddenBookingIdList').val($('#hiddenBookingIdList').val() +' , '+ t.val());
-            // $('.selections').append($('<option>', {
-            //     value: t.val(),
-            //     text: t.val()
-            // })).trigger('change');
-            // $('.selections').select2('data', {id: t.val(), a_key: t.val()}).trigger('change');
-            // $('.selections').select2();
-            // $(".selections").select2();
+
+            var taskType = $('#taskType').val();
             console.log(t.val());
+
+            if (taskType == 'challan'){
+                $('#bookingIdList').append('<div class="challan_item"><span>'+t.val()+'</span><span class="challan_list_rmv"> x</span></div>');
+                $('#hiddenBookingIdList').val($('#hiddenBookingIdList').val()+ t.val() +',');
+                $("#bookingId").val("").focus();
+            }
         }
     },
 
