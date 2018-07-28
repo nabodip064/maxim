@@ -69,7 +69,7 @@ class BookingListController extends Controller
             if($request->from_oder_date_search == $request->to_oder_date_search)
                 $bookingList->whereDate('created_at', $request->from_oder_date_search);
             else
-                $bookingList->whereBetween('created_at', [$request->from_oder_date_search, $request->to_oder_date_search]);
+                $bookingList->whereDate('created_at','>=',$request->from_oder_date_search)->whereDate('created_at','<=',$request->to_oder_date_search);
         }
 //      if($request->from_shipment_date_search != '' && $request->to_shipment_date_search != '')
 //      {
@@ -82,7 +82,7 @@ class BookingListController extends Controller
 
         if($checkValidation)
         {
-            $bookings = $bookingList->get();
+            $bookings = $bookingList->groupBy('booking_order_id')->orderBy('id','DESC')->get();
             return $bookings;
         }
         else
