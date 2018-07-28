@@ -23,6 +23,7 @@ class ChallanListController extends Controller
 
 
     public function showChallanReport(Request $request){
+//        $this->print_me($request->cid);
         $headerValue = DB::table("mxp_header")->where('header_type',11)->get();
         $multipleChallan = DB::select(" select * from Mxp_multipleChallan where challan_id ='".$request->cid."'");
         $buyerDetails = DB::table("mxp_bookingBuyer_details")->where('booking_order_id',$request->bid)->get();
@@ -41,6 +42,7 @@ class ChallanListController extends Controller
 
         $challanList = DB::table('Mxp_multipleChallan')
             ->where('challan_id', 'like', '%'.$request->challan_id.'%')
+            ->groupBy('challan_id')
             ->orderBy('id','DESC')
             ->get();
 
@@ -63,12 +65,12 @@ class ChallanListController extends Controller
             if($request->from_create_date_search == $request->to_create_date_search)
                 $challanList->whereDate('created_at', $request->from_create_date_search);
             else
-                $challanList->whereBetween('created_at', [$request->from_create_date_search, $request->to_create_date_search]);
+                $challanList->whereDate('created_at','>=',$request->from_create_date_search)->whereDate('created_at','<=',$request->to_create_date_search);
         }
 
         if($checkValidation)
         {
-            $challans = $challanList->get();
+            $challans = $challanList->groupBy('challan_id')->orderBy('id','DESC')->get();
             return $challans;
         }
         else
