@@ -37,7 +37,8 @@ $('#advance_search_form').submit(function (ev)
 });
 
 $('#booking_reset_btn').click(function () {
-    resetAllInputs('#booking_id_search','#advance_search_form');
+    location.reload();
+    // resetAllInputs('#booking_id_search','#advance_search_form');
 })
 
 function ajaxFunc(url, type, data)
@@ -122,7 +123,10 @@ function addRow(results, start)
             '</td><td>'+rows[i].booking_order_id+
             '</td><td>'+rows[i].created_at+
             '</td><td>'+
-            '</td><td><form action="./view/" target="_blank"><input type="hidden" name="bid" value="'+ rows[i].booking_order_id+
+            '</td><td>'+
+            '</td><td><a href="./createIpo/'+rows[i].booking_order_id+
+            '" class="btn btn-info">IPO</a><a href="./createMrf/'+rows[i].booking_order_id+
+            '" class="btn btn-warning">MRF</a><form action="./view/" target="_blank"><input type="hidden" name="bid" value="'+ rows[i].booking_order_id+
             '"><button class="btn btn-success">View</button></form></td></tr>');
         sl++;
     }
@@ -205,8 +209,8 @@ function addRowInChallanList(results, start)
                 '</td><td>'+rows[i].checking_id+
                 '</td><td>'+rows[i].challan_id+
                 '</td><td>'+rows[i].created_at+
-                '</td><td><form action='+setUrl+' target="_blank"><input type="hidden" name="cid" value="'+ rows[i].checking_id+
-                '"><input type="hidden" name="bid" value="'+ rows[i].challan_id+
+                '</td><td><form action='+setUrl+' target="_blank"><input type="hidden" name="cid" value="'+ rows[i].challan_id+
+                '"><input type="hidden" name="bid" value="'+ rows[i].checking_id+
                 '"><button class="btn btn-success">View</button></form></td></tr>');
             sl++;
     }
@@ -222,7 +226,8 @@ function addRowInChallanList(results, start)
 }
 
 $('#challan_reset_btn').click(function () {
-    resetAllInputs('#challan_id_search','#challan_advance_search_form');
+    location.reload();
+    // resetAllInputs('#challan_id_search','#challan_advance_search_form');
 })
 
 // MRF search List
@@ -314,5 +319,6 @@ function addRowInMrfanList(results, start)
 }
 
 $('#mrf_reset_btn').click(function () {
-    resetAllInputs('#mrf_id_search','#mrf_advance_search_form');
+    location.reload();
+    // resetAllInputs('#mrf_id_search','#mrf_advance_search_form');
 })
