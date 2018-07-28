@@ -56,14 +56,14 @@
 					@endfor
 					@endforeach
 		</div>
-		
+
 		<div class="col-md-4 col-sm-4 col-xs-5">
 			@php ($i=0)
 			@foreach ($multipleChallan as $billdata)
 				@for($i;$i <= 0;$i++)
 				<table class="tables table-bordered" style="width: 100%;">
 					<tr >
-						
+
 						<td colspan="2">
 							<div style="text-align: right;">
 								<p style="padding-left :5px;"> Date : {{Carbon\Carbon::now()->format('Y-m-d')}}</p>
@@ -71,7 +71,7 @@
 						</td>
 					</tr>
 					<tr>
-						
+
 						<td colspan="2">
 							<div style="text-align: right;">
 								<p style="padding-left :5px;"> Challan no :{{$billdata->challan_id}}</p>
@@ -81,17 +81,16 @@
 					<tr>
 						<td colspan="2">
 							<div style="text-align: right;">
-								<p style="padding-left :5px;">Checking No :{{$billdata->checking_id}}  </p>
+								<p style="padding-left :5px;">Booking Order No :{{$billdata->checking_id}}  </p>
 
 								<!-- {{Carbon\Carbon::parse($billdata->created_at)->format('dmY')}}: -->
 							</div>
 						</td>
 					</tr>
-					</div>
 				</table>
 			@endfor
 			@endforeach
-			
+
 		</div>
 	</div>
 
@@ -120,7 +119,7 @@
     <tbody>
     	<?php
     		$j = 1;
-    		$i = 0;    		
+    		$i = 0;
     		$totalAllQty = 0;
     		$totalUsdAmount = 0;
     		$BDTandUSDavarage = 80;
@@ -131,32 +130,32 @@
 
     			<?php
     				$totalQty =0;
-    				$itemsize = explode(',', $item->item_size);  				
+    				$itemsize = explode(',', $item->item_size);
     				$qty = explode(',', $item->quantity);
     				$itemlength = 0;
     				foreach ($itemsize as $itemlengths) {
     					$itemlength = sizeof($itemlengths);
     				}
-    				$itemQtyValue = array_combine($itemsize, $qty);   				
+    				$itemQtyValue = array_combine($itemsize, $qty);
     			?>
 	    			<tr>
 	    				<td>{{$j++}}</td>
 	    				<td rowspan="{{$itemlength}}">{{$item->erp_code}}</td>
 	    				<td rowspan="{{$itemlength}}">{{$item->item_code}}</td>
 	    				<td rowspan="{{$itemlength}}">{{$item->oss}}</td>
-			    		<td rowspan="{{$itemlength}}">{{$item->style}}</td> 
-			    		
+			    		<td rowspan="{{$itemlength}}">{{$item->style}}</td>
+
 			    			@if ($itemlength >= 1 )
-				    			<td colspan="2" class="colspan-td">  				
+				    			<td colspan="2" class="colspan-td">
 				    				<table>
-				    					@foreach ($itemQtyValue as $size => $Qty)
-				    					<?php 
+				    					@foreach ($itemsize as $key=>$value)
+				    					<?php
 				    						$i++;
-				    						$totalQty += $Qty; 
+				    						$totalQty += $qty[$key];
 				    					?>
 				    					<tr>
-				    						<td width="70%">{{$size}}</td>
-							    			<td width="30%">{{$Qty}}</td>
+				    						<td width="70%">{{$value}}</td>
+							    			<td width="30%">{{$qty[$key]}}</td>
 				    					</tr>
 				    					@endforeach
 
@@ -168,16 +167,16 @@
 				    					@endif
 				    				</table>
 				    			</td>
-				    		@endif			    		   
+				    		@endif
 			    		<td rowspan="{{$itemlength}}"></td>
-			    		
-			    		<?php 
+
+			    		<?php
     						$totalAllQty += $totalQty;
     					?>
     					<td></td>
 	    			</tr>
     		@endforeach
-    	
+
     	<tr>
 			<td colspan="6"><div style="text-align: center; font-weight: bold;font-size: ;"><span>Total Qty </span></div></td>
 			<td>{{$totalAllQty}}</td>
@@ -189,7 +188,7 @@
 			<td></td>
 			<td></td>
 		</tr>
-    		
+
     </tbody>
 </table>
 
@@ -205,14 +204,14 @@ inform us in 3days. After this period, you concern about this goods shall not be
 @if(!empty($value->siginingPerson_1))
 <div class="row">
 	<div class="col-md-12 col-xs-12" style="padding-bottom: 20px;">
-		
-		
+
+
 		<div class="col-md-8 col-xs-8" style="padding: 5px; padding-left: 50px;">
 			@if(!empty($value->siginingPersonSeal_1))
 				<img src="/upload/{{$value->siginingPersonSeal_1}}" height="100px" width="150px" />
 			@endif
 		</div>
-		
+
 		<div class="col-md-4 col-xs-4"  style="">
 			<div align="center">
 				@if(!empty($value->siginingSignature_1))
@@ -225,7 +224,7 @@ inform us in 3days. After this period, you concern about this goods shall not be
 				{{$value->siginingPerson_1}}
 			</div>
 		</div>
-		
+
 	</div>
 </div>
 @endif
@@ -235,14 +234,14 @@ inform us in 3days. After this period, you concern about this goods shall not be
 @if(!empty($value->siginingPerson_2))
 <div class="row">
 	<div class="col-md-12 col-xs-12" style="padding-bottom: 20px;">
-		
-		
+
+
 		<div class="col-md-8 col-xs-8" style="padding: 5px; padding-left: 50px;">
 			@if(!empty($value->siginingPersonSeal_2))
 				<img src="/upload/{{$value->siginingPersonSeal_2}}" height="100px" width="150px" />
 			@endif
 		</div>
-		
+
 		<div class="col-md-4 col-xs-4"  style="">
 			<div align="center">
 				@if(!empty($value->siginingSignature_2))
