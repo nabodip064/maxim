@@ -95,3 +95,13 @@ $(document).ready(function(){
 		
 	});
 });
+
+$('input[name="product_qty[]"]').on("keyup",function () {
+
+	var qnty = parseFloat($(this).val());
+	var availQnty = parseFloat($(this).attr("meta:index"));
+	if(qnty > availQnty){
+		alert("Qunatity should be less than balance quantity");
+        $(this).val(availQnty);
+	}
+});
