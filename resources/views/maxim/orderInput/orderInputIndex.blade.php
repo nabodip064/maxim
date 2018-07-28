@@ -43,6 +43,7 @@
                   <?php
                             $buyerName = $buyer->name_buyer;
                             $CompanyName = $buyer->name;
+                            $companyId = $buyer->id;
                   ?>
                 @endforeach
                 <div class="row">
@@ -62,6 +63,7 @@
 
                     <div class="" >
                       <input type="text" name="CompanyName" class="form-control" readonly="true" value="{{$CompanyName}}" title="Company Name">
+                      <input type="hidden" name="companyIdForBookingOrder" value="{{$companyId}}">
                     </div>
                   </div>
                 </div>
@@ -165,7 +167,7 @@
               </td>
               <td>
                 <div class="form-group">
-                  <input type="text" name="item_price[]" class="form-control item_price" >  
+                  <input type="text" name="item_price[]" class="form-control item_price" readonly="true">
                   <!-- readonly -->
                 </div>
               </td>
