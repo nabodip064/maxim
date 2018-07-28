@@ -9172,3 +9172,13 @@ nav.navbar.navbar-default.navbar-static-top {
 .hand-cursor{
   cursor: pointer;
 }
+
+span.challan_list_rmv {
+  cursor: pointer;
+  color: #f00;
+}
+
+span.challan_list_rmv:hover {
+  cursor: pointer;
+  color: #f00;
+}
