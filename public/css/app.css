@@ -6231,5 +6231,8 @@ label,
 .checkbox label {
   font-weight: 300;
 }
-
+span.challan_list_rmv:hover {
+  cursor: pointer;
+  color: #f00;
+}
 /*# sourceMappingURL=app.css.map */
