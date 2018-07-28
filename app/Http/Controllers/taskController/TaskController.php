@@ -9,6 +9,8 @@ use App\Http\Controllers\RoleManagement;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\MxpIpo;
+use App\Model\MxpBookingBuyerDetails;
+use App\Model\MxpBooking;
 use Validator;
 use Auth;
 use DB;
@@ -44,11 +46,6 @@ class TaskController extends Controller
     public function taskActionOrsubmited(Request $request){
      	$roleManage = new RoleManagement();
      	$datas = $request->all();
-
-     	$bookingIds = explode(",",$request->bookingIdList);
-
-//     	$this->print_me($request->bookingIdList);
-     	$this->print_me($bookingIds);
 
      	$taskType = isset($request->taskType) ? $request->taskType : '';
      	if($taskType === 'booking'){
@@ -179,11 +176,11 @@ class TaskController extends Controller
          }elseif($taskType === 'challan'){
 
             $validMessages = [
-                    'bookingId.required' => 'Booking Id field is required.'
+                    'bookingIdList.required' => 'Booking Id field is required.'
                     ];
             $validator = Validator::make($datas, 
                 [
-                    'bookingId' => 'required',
+                    'bookingIdList' => 'required',
                 ],
                 $validMessages
             );
@@ -193,8 +190,62 @@ class TaskController extends Controller
             }
 
             $validationError = $validator->messages();
+            $bookedId = rtrim($request->bookingIdList,", ");
 
-            $bookingDetails = DB::select("SELECT *,GROUP_CONCAT(item_size) as itemSize, GROUP_CONCAT(item_quantity) as quantity FROM mxp_booking_challan WHERE booking_order_id = '".$request->bookingId."' GROUP BY item_code");
+            $bookingIds = explode(",",$bookedId);
+            $bookingIdList = [];
+            $companyName = '';
+            $iteration = 0;
+
+         	foreach ($bookingIds as $bookingId){
+         	    $tempbookingId = $bookingId;
+                $tempbookingId =  str_replace(' ','', $tempbookingId);
+                $tempbookingId = str_replace(',', '', $tempbookingId);
+                $companyDetails = MxpBookingBuyerDetails::where('booking_order_id', $tempbookingId)->first();
+                if($iteration > 0){
+                    if ($companyDetails->Company_name != $companyName){
+                        return redirect()->back()->withInput($request->input())->withErrors("Booking order ids are not in same company");
+                    }
+                }
+                $companyName = $companyDetails->Company_name;
+                $iteration++;
+                $bookingDetails = DB::select("SELECT * FROM mxp_items_details_by_booking_challan WHERE booking_order_id = '".$tempbookingId."'");
+                foreach ($bookingDetails as $currentBooking){
+                    $checkMatch = true;
+                    foreach ($bookingIdList as $bookingList){
+                        if(($bookingList->item_code == $currentBooking->item_code) && ($bookingList->item_size == $currentBooking->item_size) && ($bookingList->gmts_color == $currentBooking->gmts_color)){
+//                            echo "item size is ".$currentBooking->item_size." has qnty ".$currentBooking->item_quantity." and pre total is ".$bookingList->item_quantity." and after add ";
+                            $bookingList->item_quantity += $currentBooking->item_quantity;
+                            $bookingList->booking_order_id = $bookingList->booking_order_id.','.$currentBooking->booking_order_id;
+                            $bookingList->booking_challan_id = $bookingList->booking_challan_id.','.$currentBooking->booking_challan_id;
+                            $checkMatch = false;
+//                            echo $bookingList->item_quantity."<br>";
+                        }
+                    }
+                    if ($checkMatch)
+                        array_push($bookingIdList, $currentBooking);
+                }
+            }
+//            $this->print_me($bookingIdList);
+
+//            for ($i = 1; $i < count($bookingIdList); $i++){
+//         	    for( $j = 0; $j < $i; $j++){
+//                    if ($bookingIdList[$i]->item_code == $bookingIdList[$j]->item_code){
+//                        $bookingIdList[$j]->item_size = $bookingIdList[$j]->item_size.','.$bookingIdList[$i]->item_size;
+//                        $bookingIdList[$j]->item_quantity = $bookingIdList[$j]->item_quantity.','.$bookingIdList[$i]->item_quantity;
+//                        $bookingIdList[$j]->gmts_color = $bookingIdList[$j]->gmts_color.','.$bookingIdList[$i]->gmts_color;
+////                        $bookingIdList[$j]->booking_order_id = $bookingIdList[$j]->booking_order_id.','.$bookingIdList[$i]->booking_order_id;
+//                        $bookingIdList[$j]->booking_challan_id = $bookingIdList[$j]->booking_challan_id.'_'.$bookingIdList[$i]->booking_challan_id;
+//                        unset($bookingIdList[$i]);
+//                    }
+//                }
+//            }
+            foreach ($bookingIdList as $booking){
+         	    if (!$booking->items_details_id)
+                    unset($booking);
+            }
+            $bookingDetails = $bookingIdList;
+//            $this->print_me($bookingIdList);
 
             $buyerDetails = DB::select("SELECT * FROM mxp_bookingBuyer_details WHERE booking_order_id = '".$request->bookingId."'");
 
@@ -223,13 +274,19 @@ class TaskController extends Controller
             $validationError = $validator->messages();
          }
     }
-    public static function getOrderQuantity($booking_order_id, $item_code, $item_size = null)
+    public static function getOrderQuantity($booking_order_id, $item_code, $item_size = null, $color = null)
     {
         
         if($item_size == null){
-            $bookingQuantityDetails = DB::select("SELECT item_quantity FROM mxp_booking WHERE booking_order_id = '".$booking_order_id."' AND item_code = '".$item_code."'");
+            if ($color == null)
+                $bookingQuantityDetails = DB::select("SELECT item_quantity FROM mxp_booking WHERE booking_order_id = '".$booking_order_id."' AND item_code = '".$item_code."'");
+            else
+                $bookingQuantityDetails = DB::select("SELECT item_quantity FROM mxp_booking WHERE booking_order_id = '".$booking_order_id."' AND item_code = '".$item_code."' AND gmts_color = '".$color."'");
         }else{
-            $bookingQuantityDetails = DB::select("SELECT item_quantity FROM mxp_booking WHERE booking_order_id = '".$booking_order_id."' AND item_code = '".$item_code."' AND item_size = '".$item_size."'");
+            if ($color == null)
+                $bookingQuantityDetails = DB::select("SELECT item_quantity FROM mxp_booking WHERE booking_order_id = '".$booking_order_id."' AND item_code = '".$item_code."' AND item_size = '".$item_size."'");
+            else
+                $bookingQuantityDetails = DB::select("SELECT item_quantity FROM mxp_booking WHERE booking_order_id = '".$booking_order_id."' AND item_code = '".$item_code."' AND item_size = '".$item_size."' AND gmts_color = '".$color."'");
         }
         return isset($bookingQuantityDetails[0]->item_quantity) ? $bookingQuantityDetails[0]->item_quantity : 0;
 
